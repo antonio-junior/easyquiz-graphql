@@ -1,5 +1,5 @@
 import { addPoll, addVote } from '../../../src/graphql/resolvers/mutations';
-import { Answer, Poll, User } from '../../../src/models';
+import { Answer, User, Poll } from '../../../src/models';
 import config from '../../config-sequelize';
 
 config();
@@ -20,16 +20,21 @@ test('resolver should add a poll', async () => {
   expect((await poll.$get('answers')).length).toBeGreaterThan(1);
 });
 
-test('resolver should add a vote', async () => {
-  const poll = await Poll.findOne();
-
-  const answer = await Answer.create({
-    description: 'nova resposta',
-    votes: 9,
-    pollId: poll.id
-  });
+test('resolver should add votes', async () => {
+  expect.assertions(2);
+  let answer = await Answer.findOne();
 
   const votedAnswer = await addVote(null, { answerId: answer.get('id') });
+  await addVote(null, { answerId: answer.get('id') });
 
-  expect(votedAnswer.get('votes')).toBe(10);
+  expect(votedAnswer).toBe(true);
+
+  answer = await answer.reload();
+  expect(answer.votes.length).toBeGreaterThanOrEqual(2);
+});
+
+test('Poll should have votes', async () => {
+  const poll = await Poll.findOne();
+
+  expect(poll.totalVotes).toBeGreaterThanOrEqual(2);
 });

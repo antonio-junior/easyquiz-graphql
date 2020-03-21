@@ -1,4 +1,6 @@
 import {
+  DefaultScope,
+  HasMany,
   CreatedAt,
   Table,
   Column,
@@ -8,16 +10,17 @@ import {
 } from 'sequelize-typescript';
 
 import Poll from './Poll';
+import Vote from './Vote';
 
+@DefaultScope(() => ({
+  include: [Vote]
+}))
 @Table({
   tableName: 'answers'
 })
 export default class Answer extends Model<Answer> {
   @Column(DataType.TEXT)
   description!: string;
-
-  @Column(DataType.NUMBER)
-  votes!: number;
 
   @CreatedAt
   @Column(DataType.DATE)
@@ -26,4 +29,7 @@ export default class Answer extends Model<Answer> {
   @ForeignKey(() => Poll)
   @Column(DataType.INTEGER)
   pollId!: number;
+
+  @HasMany(() => Vote, 'answerId')
+  votes?: Vote[];
 }

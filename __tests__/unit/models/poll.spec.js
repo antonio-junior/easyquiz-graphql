@@ -22,7 +22,7 @@ const pollTests = () => {
     expect(poll.getDataValue('title')).toBe('a pergunta');
   });
 
-  test('User should have one poll', async () => {
+  test('User should have at least one poll', async () => {
     const user = await User.findOne({ include: [Poll] });
     expect((await user.$get('polls')).length).toBeGreaterThanOrEqual(1);
   });

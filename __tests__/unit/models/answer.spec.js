@@ -8,13 +8,12 @@ const answerTests = () => {
     const poll = await Poll.findOne();
 
     await Answer.bulkCreate([
-      { description: 'resposta 2', votes: 1, pollId: poll.id },
-      { description: 'resposta 1', votes: 2, pollId: poll.id }
+      { description: 'resposta 2', pollId: poll.id },
+      { description: 'resposta 1', pollId: poll.id }
     ]);
 
     await Answer.create({
       description: 'resposta 3',
-      votes: 5,
       pollId: poll.id
     });
 

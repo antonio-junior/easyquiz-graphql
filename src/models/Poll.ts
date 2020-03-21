@@ -77,6 +77,15 @@ export default class Poll extends Model<Poll> {
   @HasMany(() => Answer, 'pollId')
   answers!: Answer[];
 
+  get totalVotes(): number {
+    const answers = this.getDataValue('answers');
+
+    return answers.reduce((acc, answer) => {
+      const votes = answer.getDataValue('votes') || [];
+      return acc + votes.length;
+    }, 0);
+  }
+
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   userId!: number;

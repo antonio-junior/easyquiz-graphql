@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize-typescript';
 
-import { Answer, Poll, User } from '../src/models';
+import { Answer, Poll, User, Vote } from '../src/models';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const config = () => {
@@ -14,7 +14,7 @@ const config = () => {
     storage: process.env.DB_STORAGE
   });
 
-  sequelize.addModels([Answer, Poll, User]);
+  sequelize.addModels([Answer, Poll, User, Vote]);
 };
 
 export default config;

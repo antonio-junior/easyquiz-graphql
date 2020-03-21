@@ -1,4 +1,4 @@
-import { Answer, Poll } from '../../models';
+import { Answer, Poll, Vote } from '../../models';
 
 const addPoll = (
   _root: unknown,
@@ -19,7 +19,7 @@ const addPoll = (
   }
 ): Promise<Poll> => {
   const answersMap = answers.map(answer => {
-    return { description: answer, votes: 0 };
+    return { description: answer };
   });
 
   return Poll.create(
@@ -42,8 +42,13 @@ const addPoll = (
 const addVote = async (
   _root: unknown,
   { answerId }: { answerId: number }
-): Promise<Answer> => {
-  await Answer.increment({ votes: 1 }, { where: { id: answerId } });
-  return Answer.findByPk(answerId, { rejectOnEmpty: false });
+): Promise<boolean> => {
+  await Vote.create({
+    byMail: 'aaaa@sss.com',
+    byIP: '123.232.100',
+    answerId
+  });
+
+  return Promise.resolve(true);
 };
 export { addPoll, addVote };
