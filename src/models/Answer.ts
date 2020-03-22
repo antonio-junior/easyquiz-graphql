@@ -1,4 +1,5 @@
 import {
+  NotEmpty,
   DefaultScope,
   HasMany,
   CreatedAt,
@@ -19,6 +20,7 @@ import Vote from './Vote';
   tableName: 'answers'
 })
 export default class Answer extends Model<Answer> {
+  @NotEmpty
   @Column(DataType.TEXT)
   description!: string;
 

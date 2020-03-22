@@ -25,20 +25,24 @@ test('resolver should add a poll', async () => {
 });
 
 test('resolver should add votes', async () => {
-  expect.assertions(2);
+  expect.assertions(3);
   let answer = await Answer.findOne();
 
-  const votedAnswer = await addVote(null, { answerId: answer.get('id') });
-  await addVote(null, { answerId: answer.get('id') });
+  const voted = await addVote(null, {
+    answerId: answer.get('id'),
+    ip: '192.168.15.7'
+  });
 
-  expect(votedAnswer).toBe(true);
+  expect(voted).toBe(true);
 
+  await addVote(null, { answerId: answer.get('id'), ip: '192.168.15.7' });
   answer = await answer.reload();
-  expect(answer.votes.length).toBeGreaterThanOrEqual(2);
-});
 
-test('Poll should have votes', async () => {
-  const poll = await Poll.findOne();
+  expect(answer.votes.length).toBeGreaterThanOrEqual(2);
+
+  const poll = await Poll.findByPk(answer.get('pollId'), {
+    rejectOnEmpty: false
+  });
 
   expect(poll.totalVotes).toBeGreaterThanOrEqual(2);
 });

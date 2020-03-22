@@ -1,4 +1,6 @@
 import {
+  IsIP,
+  IsEmail,
   CreatedAt,
   Table,
   Column,
@@ -13,9 +15,11 @@ import Answer from './Answer';
   tableName: 'votes'
 })
 export default class Vote extends Model<Vote> {
+  @IsEmail
   @Column(DataType.TEXT)
   byMail!: string;
 
+  @IsIP
   @Column(DataType.TEXT)
   byIP!: string;
 
