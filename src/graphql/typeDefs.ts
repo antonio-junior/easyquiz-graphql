@@ -5,7 +5,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    polls: [Poll!]!
+    polls: [Poll!]
   }
 
   type Poll {
@@ -18,30 +18,38 @@ const typeDefs = gql`
     partial: Boolean!
     dtExpiration: String
     answers: [Answer!]!
-    user: [User!]!
+    owner: User!
+    totalVotes: Number!
+  }
+
+  type Vote {
+    byMail: String
+    byIP: String!
   }
 
   type Answer {
     id: ID!
     description: String!
-    votes: Int!
+    votes: [Vote!]
+    countVotes: Number!
   }
 
   type Query {
     poll(id: ID!): Poll
-    polls(userId: ID!): [Poll]
+    polls(userId: ID!): [Poll!]
   }
 
   type Mutation {
     addPoll(
-      title: String
-      allowpublic: Boolean
-      multiple: Boolean
-      partial: Boolean
-      userId: ID
-      answers: [String]
+      title: String!
+      allowpublic: Boolean!
+      multiple: Boolean!
+      partial: Boolean!
+      userId: ID!
+      answers: [String]!
+      expiration: String
     ): Poll
-    addVote(answerId: ID): Answer
+    addVote(answerId: ID!, mail: String, ip: String!): Answer
   }
 `;
 

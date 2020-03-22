@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 import { Answer, Poll, Vote } from '../../models';
 
 const addPoll = (
@@ -8,6 +10,7 @@ const addPoll = (
     multiple,
     partial,
     userId,
+    expiration,
     answers
   }: {
     title: string;
@@ -15,12 +18,15 @@ const addPoll = (
     multiple: boolean;
     partial: boolean;
     userId: number;
+    expiration: string;
     answers: string[];
   }
 ): Promise<Poll> => {
   const answersMap = answers.map(answer => {
     return { description: answer };
   });
+
+  const expirationDate = moment.parseZone(expiration, 'DD-MM-YYYY hh:mm');
 
   return Poll.create(
     {
@@ -31,6 +37,7 @@ const addPoll = (
       multiple,
       partial,
       userId,
+      expiration: expirationDate,
       answers: answersMap
     },
     {
@@ -41,11 +48,11 @@ const addPoll = (
 
 const addVote = async (
   _root: unknown,
-  { answerId }: { answerId: number }
+  { answerId, mail, ip }: { answerId: number; mail: string; ip: string }
 ): Promise<boolean> => {
   await Vote.create({
-    byMail: 'aaaa@sss.com',
-    byIP: '123.232.100',
+    byMail: mail,
+    byIP: ip,
     answerId
   });
 

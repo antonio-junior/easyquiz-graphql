@@ -32,4 +32,9 @@ export default class Answer extends Model<Answer> {
 
   @HasMany(() => Vote, 'answerId')
   votes?: Vote[];
+
+  get countVotes(): number {
+    const arrVotes = this.getDataValue('votes') ?? [];
+    return arrVotes.length;
+  }
 }
