@@ -19,7 +19,7 @@ const typeDefs = gql`
     dtExpiration: String
     answers: [Answer!]!
     owner: User!
-    totalVotes: Number!
+    totalVotes: Int!
   }
 
   type Vote {
@@ -31,7 +31,7 @@ const typeDefs = gql`
     id: ID!
     description: String!
     votes: [Vote!]
-    countVotes: Number!
+    countVotes: Int!
   }
 
   type Query {

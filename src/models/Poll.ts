@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import * as moment from 'moment';
 import {
   IsAfter,
   NotEmpty,
@@ -24,7 +23,6 @@ export enum Status {
   CLOSED = 'CLOSED'
 }
 
-const TODAY = moment.utc().toISOString();
 @DefaultScope(() => ({
   include: [Answer]
 }))
@@ -61,7 +59,7 @@ export default class Poll extends Model<Poll> {
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @IsAfter(TODAY)
+  @IsAfter(new Date().toLocaleString())
   @Column(DataType.DATE)
   expiration?: Date;
 

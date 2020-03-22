@@ -1,16 +1,20 @@
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
+import { CronJob } from 'cron';
 import express, { Application } from 'express';
 import { Sequelize } from 'sequelize-typescript';
 
 import sequelize from './database/connection';
 import resolvers from './graphql/resolvers';
 import typeDefs from './graphql/typeDefs';
+import { cronTime, cronTask } from './utils/CronJob';
 
 class Server {
   private sequelize: Sequelize = sequelize;
 
   public app: Application = express();
+
+  public job = new CronJob(cronTime, cronTask);
 
   private port: number;
 
@@ -20,6 +24,7 @@ class Server {
     this.port = appInit.port;
     this.sequelize.validate();
     this.middlewares();
+    this.job.start();
   }
 
   private middlewares(): void {
