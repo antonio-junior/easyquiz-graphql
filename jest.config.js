@@ -21,7 +21,7 @@ module.exports = {
   // collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
+  collectCoverageFrom: ['!**/node_modules/**', '**/src/**', '!**/database/**'],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: '__tests__/coverage',
@@ -112,7 +112,7 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [

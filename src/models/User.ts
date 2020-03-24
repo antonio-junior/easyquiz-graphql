@@ -1,4 +1,5 @@
 import {
+  DefaultScope,
   Length,
   IsEmail,
   Table,
@@ -9,7 +10,9 @@ import {
 } from 'sequelize-typescript';
 
 import Poll from './Poll';
-
+@DefaultScope(() => ({
+  include: [Poll]
+}))
 @Table({
   tableName: 'users'
 })

@@ -10,7 +10,9 @@ const userTests = () => {
     const email = 'john@gmail.com';
 
     await User.create({ name, email });
-    expect(await User.count()).toBeGreaterThan(0);
+
+    const newUser = await User.findOne({ where: { email } });
+    expect(newUser.get('name')).toBe(name);
   });
 };
 

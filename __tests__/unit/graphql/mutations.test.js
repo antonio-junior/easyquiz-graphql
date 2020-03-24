@@ -11,16 +11,15 @@ test('resolver should add a poll', async () => {
 
   const poll = await addPoll(null, {
     title: 'poll title',
-    uuid: '',
     allowpublic: true,
     multiple: false,
     partial: true,
-    expiration: '23-04-2020 04:30',
+    expiration: '23-04-2021 04:30',
     userId: user.get('id'),
     answers: ['resposta 1', 'resposta 2']
   });
 
-  expect(poll.dtExpiration).toBe('23/04/2020 04:30');
+  expect(poll.dtExpiration).toBe('23/04/2021 04:30');
   expect((await poll.$get('answers')).length).toBeGreaterThan(1);
 });
 

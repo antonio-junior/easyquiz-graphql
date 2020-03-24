@@ -17,12 +17,14 @@ import { v4 as uuidv4 } from 'uuid';
 import Answer from './Answer';
 import User from './User';
 
-export enum Status {
+enum Status {
   ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
   CLOSED = 'CLOSED'
 }
 
+const TODAY = new Date().toISOString();
+console.log('TODAY', TODAY);
 @DefaultScope(() => ({
   include: [Answer]
 }))
@@ -35,6 +37,8 @@ export default class Poll extends Model<Poll> {
     instance.uuid = uuidv4();
     instance.status = Status.ACTIVE;
   }
+
+  static Status = Status;
 
   @NotEmpty
   @Column(DataType.TEXT)
@@ -59,7 +63,7 @@ export default class Poll extends Model<Poll> {
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @IsAfter(new Date().toLocaleString())
+  @IsAfter(TODAY)
   @Column(DataType.DATE)
   expiration?: Date;
 

@@ -10,7 +10,7 @@ test('resolver should return a poll', async () => {
   const createdPoll = await Poll.create({
     title: 'nova pergunta',
     uuid: '',
-    status: 'ativo',
+    status: Poll.Status.ACTIVE,
     allowpublic: true,
     multiple: true,
     partial: true,

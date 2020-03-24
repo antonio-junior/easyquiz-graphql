@@ -1,43 +1,47 @@
 import { Poll, User } from '../../../src/models';
-import { Status } from '../../../src/models/Poll';
 import config from '../../config-sequelize';
 
 config();
 
+const email = 'tony@gmail.com';
+let pollId = 0;
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const pollTests = () => {
   test('should create a poll', async () => {
-    const user = await User.findOne();
+    const name = 'tony';
+
+    const user = await User.create({ name, email });
 
     const poll = await Poll.create({
       title: 'a pergunta',
       uuid: '',
-      status: Status.ACTIVE,
+      status: Poll.Status.ACTIVE,
       allowpublic: true,
       multiple: true,
       partial: true,
-      userId: user.id
+      userId: user.get('id')
     });
 
+    pollId = poll.get('id');
     expect(poll.getDataValue('title')).toBe('a pergunta');
   });
 
-  test('User should have at least one poll', async () => {
-    const user = await User.findOne({ include: [Poll] });
-    expect((await user.$get('polls')).length).toBeGreaterThanOrEqual(1);
+  test('User should have one poll', async () => {
+    const user = await User.findOne({ where: { email } });
+    expect((await user.$get('polls')).length).toBe(1);
   });
 
   test('Poll should belongs to an user', async () => {
-    const poll = await Poll.findOne();
+    const poll = await Poll.findOne({ where: { id: pollId } });
     expect(poll.get('userId')).toBeTruthy();
   });
 
   test('Poll should return expiration date in a friendly format', async () => {
-    const user = await User.findOne();
+    const user = await User.findOne({ where: { email } });
 
     const poll = await Poll.create({
       title: 'a nova pergunta',
-      status: Status.ACTIVE,
+      status: Poll.Status.ACTIVE,
       uuid: '',
       allowpublic: true,
       multiple: true,

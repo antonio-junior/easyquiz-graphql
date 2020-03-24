@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import pg from 'pg';
 import { Sequelize } from 'sequelize-typescript';
 
 import { Answer, Poll, User, Vote } from '../models';
@@ -12,7 +13,10 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME,
   dialect: process.env.DB_IS_POSTGRES ? 'postgres' : 'sqlite',
   username: process.env.DB_USER,
-  password: process.env.DB_PWD
+  password: process.env.DB_PWD,
+  dialectOptions: {
+    useUTC: false // for reading from database
+  }
 });
 
 sequelize.addModels([Answer, Poll, User, Vote]);
