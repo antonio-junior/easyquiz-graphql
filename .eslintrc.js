@@ -1,5 +1,5 @@
 module.exports = {
-  ignorePatterns: ['node_modules/', 'src/database/migrations', 'src/global.d.ts'],
+  ignorePatterns: ['node_modules/', 'src/database/migrations', 'src/database/seeders'],
   env: {
     es6: true,
     node: true,

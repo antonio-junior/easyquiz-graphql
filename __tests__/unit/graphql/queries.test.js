@@ -1,21 +1,38 @@
 import { poll, polls } from '../../../src/graphql/resolvers/queries';
-import { User, Poll } from '../../../src/models';
+import { User, Poll, PollSet } from '../../../src/models';
 import config from '../../config-sequelize';
 
 config();
 
+let userId;
+
 test('resolver should return a poll', async () => {
   const user = await User.create({ name: 'roger', email: 'roger@gmail.com' });
+  userId = user.get('id');
 
-  const createdPoll = await Poll.create({
-    title: 'nova pergunta',
-    uuid: '',
-    status: Poll.Status.ACTIVE,
-    allowpublic: true,
-    multiple: true,
-    partial: true,
-    userId: user.id
-  });
+  const createdPoll = await PollSet.create(
+    {
+      title: 'New Poll',
+      uuid: '',
+      status: PollSet.Status.ACTIVE,
+      allowpublic: true,
+      partial: true,
+      userId,
+      polls: [
+        {
+          question: 'the question',
+          maxselections: 1,
+          alternatives: [
+            { description: 'alternative 1' },
+            { description: 'alternative 2' }
+          ]
+        }
+      ]
+    },
+    {
+      include: [Poll]
+    }
+  );
 
   const returnedPoll = await poll(null, { id: createdPoll.get('id') });
 
@@ -23,30 +40,31 @@ test('resolver should return a poll', async () => {
 });
 
 test('resolver should return all user polls', async () => {
-  const user = await User.create({ name: 'paul', email: 'paul@gmail.com' });
-
-  await Poll.bulkCreate([
+  await PollSet.create(
     {
-      title: 'nova pergunta 2',
+      title: 'New Poll',
       uuid: '',
-      status: 'ativo',
+      status: PollSet.Status.ACTIVE,
       allowpublic: true,
-      multiple: true,
       partial: true,
-      userId: user.id
+      userId,
+      polls: [
+        {
+          question: 'the question',
+          maxselections: 1,
+          alternatives: [
+            { description: 'alternative 1' },
+            { description: 'alternative 2' }
+          ]
+        }
+      ]
     },
     {
-      title: 'nova pergunta 3',
-      uuid: '',
-      status: 'ativo',
-      allowpublic: true,
-      multiple: true,
-      partial: true,
-      userId: user.id
+      include: [Poll]
     }
-  ]);
+  );
 
-  const userPolls = await polls(null, { userId: user.get('id') });
+  const userPolls = await polls(null, { userId });
 
   expect(userPolls.length).toBe(2);
 });

@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable(
-      'votes',
+      'answers',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -9,19 +9,15 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
-        byMail: {
-          type: Sequelize.STRING,
-          allowNull: true,
-        },
-        byIP: {
+        email: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        answerId: {
+        alternativeId: {
           type: Sequelize.INTEGER,
           references: {
             model: {
-              tableName: 'answers',
+              tableName: 'alternatives',
             },
             key: 'id'
           },
@@ -41,5 +37,5 @@ module.exports = {
       },
     ),
 
-  down: (queryInterface, _Sequelize) => queryInterface.dropTable('votes'),
+  down: (queryInterface, _Sequelize) => queryInterface.dropTable('answers'),
 };

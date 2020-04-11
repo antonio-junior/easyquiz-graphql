@@ -1,6 +1,7 @@
+import Alternative from './Alternative';
 import Answer from './Answer';
 import Poll from './Poll';
+import PollSet from './PollSet';
 import User from './User';
-import Vote from './Vote';
 
-export { Answer, Poll, User, Vote };
+export { Alternative, Answer, Poll, PollSet, User };

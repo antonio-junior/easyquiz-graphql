@@ -5,33 +5,38 @@ const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    polls: [Poll!]
+    pollsets: [PollSet!]
+  }
+
+  type PollSet {
+    title: String!
+    uuid: String!
+    status: String!
+    allowpublic: Boolean!
+    partial: Boolean!
+    dtExpiration: String
+    polls: [Poll!]!
+    owner: User!
+    totalAnswers: Int!
   }
 
   type Poll {
     id: ID!
-    title: String!
-    uuid: String!
-    status: String!
-    public: Boolean!
-    multiple: Boolean!
-    partial: Boolean!
-    dtExpiration: String
-    answers: [Answer!]!
-    owner: User!
-    totalVotes: Int!
+    question: String!
+    maxselections: Int!
+    rightanswer: Int
+    alternatives: [Alternative!]!
   }
 
-  type Vote {
-    byMail: String
-    byIP: String!
+  type Alternative {
+    id: ID!
+    description: String!
+    answers: [Answer!]
+    countVotes: Int!
   }
 
   type Answer {
-    id: ID!
-    description: String!
-    votes: [Vote!]
-    countVotes: Int!
+    email: String
   }
 
   type Query {
@@ -39,17 +44,32 @@ const typeDefs = gql`
     polls(userId: ID!): [Poll!]
   }
 
+  input AlternativeInput {
+    description: String!
+  }
+
+  input PollInput {
+    question: String!
+    maxselections: Int
+    rightanswer: Int
+    alternatives: [AlternativeInput]!
+  }
+
+  input AnswerInput {
+    alternativeId: ID!
+    email: String
+  }
+
   type Mutation {
     addPoll(
       title: String!
-      allowpublic: Boolean!
-      multiple: Boolean!
-      partial: Boolean!
-      userId: ID!
-      answers: [String]!
+      allowpublic: Boolean
+      partial: Boolean
       expiration: String
-    ): Poll
-    addVote(answerId: ID!, mail: String, ip: String!): Answer
+      userId: ID!
+      polls: [PollInput]!
+    ): PollSet
+    addAnswer(answers: [AnswerInput]): Boolean
   }
 `;
 

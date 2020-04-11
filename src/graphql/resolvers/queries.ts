@@ -1,11 +1,11 @@
-import { Poll } from '../../models';
+import { PollSet } from '../../models';
 
-const poll = (_root: unknown, { id }: { id: number }): Promise<Poll> =>
-  Poll.findByPk(id);
+const poll = (_root: unknown, { id }: { id: number }): Promise<PollSet> =>
+  PollSet.findByPk(id);
 
 const polls = (
   _root: unknown,
   { userId }: { userId: number }
-): Promise<Poll[]> => Poll.findAll({ where: { userId } });
+): Promise<PollSet[]> => PollSet.findAll({ where: { userId } });
 
 export { poll, polls };

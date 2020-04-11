@@ -1,7 +1,5 @@
 import {
-  NotEmpty,
-  DefaultScope,
-  HasMany,
+  IsEmail,
   CreatedAt,
   Table,
   Column,
@@ -10,33 +8,21 @@ import {
   Model
 } from 'sequelize-typescript';
 
-import Poll from './Poll';
-import Vote from './Vote';
+import Alternative from './Alternative';
 
-@DefaultScope(() => ({
-  include: [Vote]
-}))
 @Table({
   tableName: 'answers'
 })
 export default class Answer extends Model<Answer> {
-  @NotEmpty
+  @IsEmail
   @Column(DataType.TEXT)
-  description!: string;
+  email!: string;
 
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @ForeignKey(() => Poll)
+  @ForeignKey(() => Alternative)
   @Column(DataType.INTEGER)
-  pollId!: number;
-
-  @HasMany(() => Vote, 'answerId')
-  votes?: Vote[];
-
-  get countVotes(): number {
-    const arrVotes = this.getDataValue('votes') ?? [];
-    return arrVotes.length;
-  }
+  alternativeId!: number;
 }

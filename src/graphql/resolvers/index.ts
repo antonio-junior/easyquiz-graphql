@@ -1,4 +1,4 @@
-import { addPoll, addVote } from './mutations';
+import { addPoll, addAnswer } from './mutations';
 import { poll, polls } from './queries';
 
 const resolvers = {
@@ -8,7 +8,7 @@ const resolvers = {
   },
   Mutation: {
     addPoll,
-    addVote
+    addAnswer
   }
 };
 

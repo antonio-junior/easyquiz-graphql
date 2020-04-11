@@ -9,9 +9,9 @@ import {
   HasMany
 } from 'sequelize-typescript';
 
-import Poll from './Poll';
+import PollSet from './PollSet';
 @DefaultScope(() => ({
-  include: [Poll]
+  include: [PollSet]
 }))
 @Table({
   tableName: 'users'
@@ -25,6 +25,6 @@ export default class User extends Model<User> {
   @Column(DataType.TEXT)
   email!: string;
 
-  @HasMany(() => Poll, 'userId')
-  polls?: Poll[];
+  @HasMany(() => PollSet, 'userId')
+  pollSets?: PollSet[];
 }

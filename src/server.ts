@@ -4,10 +4,10 @@ import { CronJob } from 'cron';
 import express, { Application } from 'express';
 import { Sequelize } from 'sequelize-typescript';
 
+import { cronTime, cronTask } from './cron/CronJob';
 import sequelize from './database/connection';
 import resolvers from './graphql/resolvers';
 import typeDefs from './graphql/typeDefs';
-import { cronTime, cronTask } from './utils/CronJob';
 
 class Server {
   private sequelize: Sequelize = sequelize;

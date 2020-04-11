@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable(
-      'polls',
+      'alternatives',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -9,23 +9,15 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
-        question: {
+        description: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        maxselections: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-        },
-        rightanswer: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-        },
-        pollSetId: {
+        pollId: {
           type: Sequelize.INTEGER,
           references: {
             model: {
-              tableName: 'pollsets',
+              tableName: 'polls',
             },
             key: 'id'
           },
@@ -45,5 +37,5 @@ module.exports = {
       },
     ),
 
-  down: (queryInterface, _Sequelize) => queryInterface.dropTable('polls'),
+  down: (queryInterface, _Sequelize) => queryInterface.dropTable('alternatives'),
 };

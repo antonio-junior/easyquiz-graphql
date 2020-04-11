@@ -1,61 +1,65 @@
 import * as moment from 'moment';
 
-import { Answer, Poll, Vote } from '../../models';
+import { Answer, Poll, PollSet } from '../../models';
+
+interface AlternativeInput {
+  description: string;
+}
+
+interface PollInput {
+  question: string;
+  maxselections: number;
+  rightanswer: number;
+  alternatives: AlternativeInput[];
+}
 
 const addPoll = (
   _root: unknown,
   {
     title,
     allowpublic,
-    multiple,
     partial,
-    userId,
     expiration,
-    answers
+    userId,
+    polls
   }: {
     title: string;
     allowpublic: boolean;
-    multiple: boolean;
     partial: boolean;
-    userId: number;
     expiration: string;
-    answers: string[];
+    userId: number;
+    polls: PollInput[];
   }
-): Promise<Poll> => {
-  const answersMap = answers.map(answer => {
-    return { description: answer };
-  });
-
+): Promise<PollSet> => {
   const expirationDate = moment.parseZone(expiration, 'DD-MM-YYYY hh:mm');
 
-  return Poll.create(
+  return PollSet.create(
     {
-      uuid: '',
-      status: '',
       title,
+      uuid: '',
+      status: PollSet.Status.ACTIVE,
       allowpublic,
-      multiple,
       partial,
       userId,
       expiration: expirationDate,
-      answers: answersMap
+      polls
     },
     {
-      include: [Answer]
+      include: [Poll]
     }
   );
 };
 
-const addVote = async (
+interface AnswerInput {
+  alternativeId: number;
+  email: string;
+}
+const addAnswer = async (
   _root: unknown,
-  { answerId, mail, ip }: { answerId: number; mail: string; ip: string }
+  { answers }: { answers: AnswerInput[] }
 ): Promise<boolean> => {
-  await Vote.create({
-    byMail: mail,
-    byIP: ip,
-    answerId
-  });
+  await Answer.bulkCreate(answers);
 
   return Promise.resolve(true);
 };
-export { addPoll, addVote };
+export { addPoll, addAnswer };
