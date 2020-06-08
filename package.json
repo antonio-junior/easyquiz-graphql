@@ -73,7 +73,7 @@
     "ts-node": "^8.6.2"
   },
   "dependencies": {
-    "apollo-server": "^2.10.0",
+    "apollo-server": "^2.14.2",
     "apollo-server-express": "^2.10.0",
     "bcrypt": "^4.0.1",
     "cookie-parser": "^1.4.5",
