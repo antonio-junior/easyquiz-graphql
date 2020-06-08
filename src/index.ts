@@ -1,9 +1,10 @@
-import log from 'loglevel';
+import dotenv from 'dotenv';
 
 import Server from './server';
 
-log.setLevel('debug');
-global.log = log;
+dotenv.config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+});
 
 const PORT = process.env.PORT || 3000;
 

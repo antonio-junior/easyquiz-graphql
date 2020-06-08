@@ -60,11 +60,7 @@ describe('CronJob', () => {
     const closeds = await PollSet.findAll({
       where: { status: PollSet.Status.CLOSED }
     });
-    const actives = await PollSet.findAll({
-      where: { status: PollSet.Status.ACTIVE }
-    });
 
     expect(closeds.length).toBe(1);
-    expect(actives.length).toBe(0);
   });
 });

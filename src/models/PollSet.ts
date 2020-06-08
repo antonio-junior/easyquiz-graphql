@@ -50,7 +50,7 @@ export default class PollSet extends Model<PollSet> {
   status!: string;
 
   @Column(DataType.BOOLEAN)
-  allowpublic = false;
+  allowpublic?: boolean;
 
   @Column(DataType.BOOLEAN)
   partial!: boolean;

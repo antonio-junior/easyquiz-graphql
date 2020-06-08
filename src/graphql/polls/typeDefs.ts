@@ -1,14 +1,8 @@
 import { gql } from 'apollo-server';
 
 const typeDefs = gql`
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-    pollsets: [PollSet!]
-  }
-
   type PollSet {
+    id: ID!
     title: String!
     uuid: String!
     status: String!
@@ -40,12 +34,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    poll(id: ID!): Poll
-    polls(userId: ID!): [Poll!]
+    poll(id: ID!): PollSet
+    userPolls(userId: ID!): [PollSet!]
+    pollsets: [PollSet!]
   }
 
   input AlternativeInput {
-    description: String!
+    description: String
   }
 
   input PollInput {

@@ -25,6 +25,9 @@ export default class User extends Model<User> {
   @Column(DataType.TEXT)
   email!: string;
 
+  @Column(DataType.TEXT)
+  password!: string;
+
   @HasMany(() => PollSet, 'userId')
   pollSets?: PollSet[];
 }

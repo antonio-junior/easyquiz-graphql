@@ -34,7 +34,11 @@ test('resolver should return a poll', async () => {
     }
   );
 
-  const returnedPoll = await poll(null, { id: createdPoll.get('id') });
+  const returnedPoll = await poll(
+    null,
+    { id: createdPoll.get('id') },
+    { cookieUserId: 1 }
+  );
 
   expect(returnedPoll.get('title')).toBe(createdPoll.get('title'));
 });
@@ -64,7 +68,7 @@ test('resolver should return all user polls', async () => {
     }
   );
 
-  const userPolls = await polls(null, { userId });
+  const userPolls = await polls(null, { userId }, { cookieUserId: userId });
 
   expect(userPolls.length).toBe(2);
 });
