@@ -13,10 +13,6 @@ const typeDefs = gql`
     login(email: String!, password: String!): User
     logout: Boolean
   }
-
-  type Query {
-    myPollSets: [PollSet!]
-  }
 `;
 
 export default typeDefs;

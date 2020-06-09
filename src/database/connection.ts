@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize-typescript';
 
-import { Alternative, Answer, Poll, PollSet, User } from '../models';
+import { Alternative, Answer, Invite, Poll, PollSet, User } from '../models';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
@@ -19,6 +19,6 @@ const sequelize = new Sequelize({
   }
 });
 
-sequelize.addModels([Alternative, Answer, Poll, PollSet, User]);
+sequelize.addModels([Alternative, Answer, Invite, Poll, PollSet, User]);
 
 export default sequelize;

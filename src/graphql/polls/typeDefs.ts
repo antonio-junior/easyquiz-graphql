@@ -55,7 +55,13 @@ const typeDefs = gql`
     email: String
   }
 
+  input InputInvite {
+    email: String!
+    pollsetId: ID!
+  }
+
   type Mutation {
+    addInvites(invites: [InputInvite]!): Boolean
     addPoll(
       title: String!
       allowpublic: Boolean
@@ -65,6 +71,13 @@ const typeDefs = gql`
       polls: [PollInput]!
     ): PollSet
     addAnswer(answers: [AnswerInput]): Boolean
+  }
+
+  type Query {
+    myPollSets: [PollSet!]
+    available: [PollSet!]
+    publicPollSets: [PollSet!]
+    votedPollSets: [PollSet!]
   }
 `;
 

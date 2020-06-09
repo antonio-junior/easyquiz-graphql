@@ -3,23 +3,11 @@ import bcrypt from 'bcrypt';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { PollSet, User } from '../../models';
+import { User } from '../../models';
+
+export const COOKIE_NAME = '_JWT_COOKIE';
 
 const resolvers = {
-  Query: {
-    userPolls: (
-      _root: unknown,
-      { userId }: { userId: number },
-      { loggedUserId }: { loggedUserId: number }
-    ): Promise<PollSet[]> => {
-      // user can edit only polls created by himself
-      if (loggedUserId !== userId)
-        throw new AuthenticationError('Not Authorized');
-
-      return PollSet.findAll({ where: { userId } });
-    }
-  },
-
   Mutation: {
     login: async (
       _root: unknown,
@@ -35,12 +23,12 @@ const resolvers = {
       if (!isValid) throw new AuthenticationError('Password incorrect');
 
       const token = jwt.sign(
-        { email: user.email, id: user.id },
+        { email: user.email, userId: user.id },
         process.env.SECRET_KEY ?? 'secret',
         { expiresIn: '1d' }
       );
 
-      res.cookie('jwt', token, {
+      res.cookie(COOKIE_NAME, token, {
         httpOnly: true
       });
 
@@ -52,7 +40,8 @@ const resolvers = {
       _args: unknown,
       { res }: { res: Response }
     ): boolean => {
-      res.cookie('jwt', { expires: Date.now() });
+      res.cookie(COOKIE_NAME, { expires: Date.now() });
+
       return true;
     },
 

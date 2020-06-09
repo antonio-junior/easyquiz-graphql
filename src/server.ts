@@ -3,21 +3,17 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { CronJob } from 'cron';
 import express, { Application, Request, Response } from 'express';
-import { makeExecutableSchema } from 'graphql-tools';
-import { mergeTypeDefs } from 'graphql-tools-merge-typedefs';
 import helmet from 'helmet';
 import jwt from 'jsonwebtoken';
 import { Sequelize } from 'sequelize-typescript';
 
 import { cronTime, cronTask } from './cron/CronJob';
 import sequelize from './database/connection';
-import PollResolvers from './graphql/polls/resolvers';
-import PollTypeDef from './graphql/polls/typeDefs';
-import UserResolvers from './graphql/users/resolvers';
-import UserTypeDef from './graphql/users/typeDefs';
+import schema from './graphql/schema';
+import { COOKIE_NAME } from './graphql/users/resolvers';
 
 interface UserContext {
-  id: number;
+  userId: number;
   email: string;
 }
 interface SessionContext extends UserContext {
@@ -34,10 +30,7 @@ class Server {
   private port: number;
 
   public apolloServer = new ApolloServer({
-    schema: makeExecutableSchema({
-      typeDefs: mergeTypeDefs([UserTypeDef, PollTypeDef]),
-      resolvers: [UserResolvers, PollResolvers]
-    }),
+    schema,
     context: ({
       req,
       res
@@ -45,9 +38,9 @@ class Server {
       req: Request;
       res: Response;
     }): SessionContext => {
-      const defaultSessionContext = { id: 0, email: '', res };
+      const defaultSessionContext = { userId: 0, email: '', res };
 
-      const token = req.cookies.jwt;
+      const token = req.cookies[COOKIE_NAME];
 
       if (!token) return defaultSessionContext;
 
