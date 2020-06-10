@@ -50,7 +50,7 @@ export default class PollSet extends Model<PollSet> {
   status!: string;
 
   @Column(DataType.BOOLEAN)
-  allowpublic?: boolean;
+  ispublic?: boolean;
 
   @Column(DataType.BOOLEAN)
   partial!: boolean;
@@ -80,6 +80,10 @@ export default class PollSet extends Model<PollSet> {
 
   @HasMany(() => Poll, 'pollSetId')
   polls!: Poll[];
+
+  get isQuiz(): boolean {
+    return this.getDataValue('polls').length > 1;
+  }
 
   get totalAnswers(): number {
     const [poll] = this.getDataValue('polls');

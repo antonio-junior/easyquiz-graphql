@@ -25,7 +25,7 @@ module.exports = {
           type: Sequelize.BOOLEAN,
           allowNull: false,
         },
-        allowpublic: {
+        ispublic: {
           type: Sequelize.BOOLEAN,
           allowNull: false,
         },

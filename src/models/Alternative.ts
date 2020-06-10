@@ -24,6 +24,9 @@ export default class Alternative extends Model<Alternative> {
   @Column(DataType.TEXT)
   description!: string;
 
+  @Column(DataType.BOOLEAN)
+  isright?: boolean;
+
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;

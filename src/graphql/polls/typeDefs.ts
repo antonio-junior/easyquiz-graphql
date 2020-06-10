@@ -6,7 +6,7 @@ const typeDefs = gql`
     title: String!
     uuid: String!
     status: String!
-    allowpublic: Boolean!
+    ispublic: Boolean!
     partial: Boolean!
     dtExpiration: String
     polls: [Poll!]!
@@ -41,6 +41,7 @@ const typeDefs = gql`
 
   input AlternativeInput {
     description: String
+    isright: Boolean
   }
 
   input PollInput {
@@ -64,7 +65,7 @@ const typeDefs = gql`
     addInvites(invites: [InputInvite]!): Boolean
     addPoll(
       title: String!
-      allowpublic: Boolean
+      ispublic: Boolean
       partial: Boolean
       expiration: String
       userId: ID!

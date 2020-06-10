@@ -16,6 +16,7 @@ interface AnswerInput {
 
 interface AlternativeInput {
   description: string;
+  isright: boolean;
 }
 
 interface PollInput {
@@ -45,7 +46,7 @@ const resolvers = {
       const userInvites = await Invite.findAll({ where: { email } });
       const invitesPollSetIds = userInvites.map(i => i.pollsetId);
 
-      if (!pollSet?.allowpublic && !invitesPollSetIds.includes(id)) {
+      if (!pollSet?.ispublic && !invitesPollSetIds.includes(id)) {
         throw new AuthenticationError('Not Authorized');
       }
 
@@ -82,7 +83,7 @@ const resolvers = {
     },
     publicPollSets: (): Promise<PollSet[]> => {
       return PollSet.findAll({
-        where: { allowpublic: true }
+        where: { ispublic: true }
       });
     },
     myPollSets: (
@@ -109,7 +110,7 @@ const resolvers = {
       return PollSet.findAll({
         where: {
           [Op.or]: [
-            { allowpublic: true },
+            { ispublic: true },
             {
               id: {
                 [Op.in]: pollSetIds
@@ -151,14 +152,14 @@ const resolvers = {
       _root: unknown,
       {
         title,
-        allowpublic,
+        ispublic,
         partial,
         expiration,
         userId,
         polls
       }: {
         title: string;
-        allowpublic: boolean;
+        ispublic: boolean;
         partial: boolean;
         expiration: string;
         userId: number;
@@ -167,12 +168,23 @@ const resolvers = {
     ): Promise<PollSet> => {
       const expirationDate = moment.parseZone(expiration, 'DD-MM-YYYY hh:mm');
 
+      polls.forEach(({ maxselections, alternatives, question }) => {
+        if (maxselections > alternatives.length)
+          throw new Error('Max selections ccanot be greater than alternatives');
+
+        if (alternatives.every(alt => alt.isright === false)) {
+          throw new Error(
+            `'${question}' should have at least one right Alternative`
+          );
+        }
+      });
+
       return PollSet.create(
         {
           title,
           uuid: '',
           status: PollSet.Status.ACTIVE,
-          allowpublic,
+          ispublic,
           partial,
           userId,
           expiration: expirationDate.isValid() ? expirationDate : null,

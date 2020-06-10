@@ -51,6 +51,8 @@ class Server {
         res,
         pubSub: this.pubSub
       };
+
+      // it's a Subscription request
       if (connection) return defaultSessionContext;
 
       const token = req.cookies[COOKIE_NAME];
