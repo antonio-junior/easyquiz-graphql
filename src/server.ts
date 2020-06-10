@@ -1,11 +1,11 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, PubSub } from 'apollo-server-express';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import { CronJob } from 'cron';
 import express, { Application, Request, Response } from 'express';
-import helmet from 'helmet';
+import http from 'http';
 import jwt from 'jsonwebtoken';
 import { Sequelize } from 'sequelize-typescript';
+import { ExecutionParams } from 'subscriptions-transport-ws';
 
 import { cronTime, cronTask } from './cron/CronJob';
 import sequelize from './database/connection';
@@ -18,6 +18,7 @@ interface UserContext {
 }
 interface SessionContext extends UserContext {
   res: Response;
+  pubSub: PubSub;
 }
 
 class Server {
@@ -29,16 +30,28 @@ class Server {
 
   private port: number;
 
+  private pubSub = new PubSub();
+
+  private httpServer = http.createServer(this.app);
+
   public apolloServer = new ApolloServer({
     schema,
     context: ({
       req,
-      res
+      res,
+      connection
     }: {
       req: Request;
       res: Response;
+      connection: ExecutionParams;
     }): SessionContext => {
-      const defaultSessionContext = { userId: 0, email: '', res };
+      const defaultSessionContext = {
+        userId: 0,
+        email: '',
+        res,
+        pubSub: this.pubSub
+      };
+      if (connection) return defaultSessionContext;
 
       const token = req.cookies[COOKIE_NAME];
 
@@ -50,7 +63,7 @@ class Server {
           process.env.SECRET_KEY ?? 'secret'
         ) as UserContext;
 
-        return { res, ...user };
+        return { pubSub: this.pubSub, res, ...user };
       } catch {
         return defaultSessionContext;
       }
@@ -65,19 +78,20 @@ class Server {
   }
 
   private middlewares(): void {
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(cors());
     this.app.use(cookieParser());
-    this.app.use(helmet());
     this.apolloServer.applyMiddleware({ app: this.app, path: '/graphql' });
+    this.apolloServer.installSubscriptionHandlers(this.httpServer);
   }
 
   public listen(): void {
-    this.app.listen(this.port, () => {
+    this.httpServer.listen(this.port, () => {
       // eslint-disable-next-line no-console
       console.log(
-        `Graphql server listening on http://localhost:${this.port}${this.apolloServer.graphqlPath}`
+        `🚀 Server ready at http://localhost:${this.port}${this.apolloServer.graphqlPath}`
+      );
+      // eslint-disable-next-line no-console
+      console.log(
+        `🚀 Subscriptions ready at ws://localhost:${this.port}${this.apolloServer.subscriptionsPath}`
       );
     });
   }

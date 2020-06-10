@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server';
+import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type PollSet {
@@ -78,6 +78,10 @@ const typeDefs = gql`
     available: [PollSet!]
     publicPollSets: [PollSet!]
     votedPollSets: [PollSet!]
+  }
+
+  type Subscription {
+    invited: PollSet!
   }
 `;
 

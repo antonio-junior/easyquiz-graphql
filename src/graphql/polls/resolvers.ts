@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server';
+import { PubSub, AuthenticationError } from 'apollo-server-express';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
 
@@ -28,6 +28,8 @@ interface PollInput {
 const auth = (userId: number): void => {
   if (!userId) throw new AuthenticationError('Must be authenticated.');
 };
+
+const USER_INVITED = 'USER_INVITED';
 
 const resolvers = {
   PollSet: {
@@ -123,7 +125,7 @@ const resolvers = {
     addInvites: async (
       _root: unknown,
       { invites }: { invites: InviteInput[] },
-      { userId }: { userId: number }
+      { userId, pubSub }: { userId: number; pubSub: PubSub }
     ): Promise<boolean> => {
       auth(userId);
 
@@ -138,6 +140,10 @@ const resolvers = {
         throw new Error('Not authorized.');
 
       const added = await Invite.bulkCreate(invites);
+
+      pollSets.map(pollSet =>
+        pubSub.publish(USER_INVITED, { invited: pollSet })
+      );
 
       return added.length > 0;
     },
@@ -185,6 +191,16 @@ const resolvers = {
       const added = await Answer.bulkCreate(answers);
 
       return added.length > 0;
+    }
+  },
+
+  Subscription: {
+    invited: {
+      subscribe: (
+        _root: unknown,
+        _p: unknown,
+        { pubSub }: { pubSub: PubSub }
+      ): AsyncIterator<string> => pubSub.asyncIterator<string>([USER_INVITED])
     }
   }
 };
