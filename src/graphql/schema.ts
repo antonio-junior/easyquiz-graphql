@@ -6,9 +6,12 @@ import PollTypeDef from './polls/typeDefs';
 import UserResolvers from './users/resolvers';
 import UserTypeDef from './users/typeDefs';
 
+export const resolvers = [UserResolvers, PollResolvers];
+export const typeDefs = [UserTypeDef, PollTypeDef];
+
 const schema = makeExecutableSchema({
-  typeDefs: mergeTypeDefs([UserTypeDef, PollTypeDef]),
-  resolvers: [UserResolvers, PollResolvers]
+  typeDefs: mergeTypeDefs(typeDefs),
+  resolvers
 });
 
 export default schema;
