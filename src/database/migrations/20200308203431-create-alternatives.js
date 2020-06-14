@@ -13,6 +13,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        isright: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+        },
         pollId: {
           type: Sequelize.INTEGER,
           references: {

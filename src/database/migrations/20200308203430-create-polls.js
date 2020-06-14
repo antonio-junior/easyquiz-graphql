@@ -17,10 +17,6 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        rightanswer: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-        },
         pollSetId: {
           type: Sequelize.INTEGER,
           references: {

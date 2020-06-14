@@ -35,9 +35,6 @@ export default class Poll extends Model<Poll> {
   @HasMany(() => Alternative, 'pollId')
   alternatives!: Alternative[];
 
-  @Column(DataType.INTEGER)
-  rightanswer?: number;
-
   @ForeignKey(() => PollSet)
   @Column(DataType.INTEGER)
   pollSetId!: number;

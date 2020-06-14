@@ -18,7 +18,6 @@ const typeDefs = gql`
     id: ID!
     question: String!
     maxselections: Int!
-    rightanswer: Int
     alternatives: [Alternative!]!
   }
 
@@ -27,6 +26,7 @@ const typeDefs = gql`
     description: String!
     answers: [Answer!]
     countVotes: Int!
+    isright: Boolean!
   }
 
   type Answer {
