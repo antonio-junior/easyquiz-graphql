@@ -1,7 +1,14 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize-typescript';
 
-import { Alternative, Answer, Poll, PollSet, User } from '../src/models';
+import {
+  Alternative,
+  Answer,
+  Invite,
+  Poll,
+  PollSet,
+  User
+} from '../src/models';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const config = () => {
@@ -14,7 +21,7 @@ const config = () => {
     storage: process.env.DB_STORAGE
   });
 
-  sequelize.addModels([Alternative, Answer, Poll, PollSet, User]);
+  sequelize.addModels([Alternative, Answer, Invite, Poll, PollSet, User]);
 };
 
 export default config;

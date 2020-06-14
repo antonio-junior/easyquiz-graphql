@@ -17,7 +17,7 @@ import PollSet from './PollSet';
   tableName: 'users'
 })
 export default class User extends Model<User> {
-  @Length({ min: 3, max: 15 })
+  @Length({ min: 3, max: 30 })
   @Column(DataType.TEXT)
   name!: string;
 

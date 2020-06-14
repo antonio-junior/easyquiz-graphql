@@ -1,6 +1,7 @@
 import { cronTime, cronTask } from '../../../src/cron/CronJob';
-import { Poll, PollSet, User } from '../../../src/models';
+import { PollSet } from '../../../src/models';
 import config from '../../config-sequelize';
+import { createFakePoll } from '../utils/pollBuilder';
 
 config();
 
@@ -13,11 +14,6 @@ describe('CronJob', () => {
   });
 
   test('cronTask should run', async () => {
-    const name = 'cronuser';
-    const email = 'cronuser@gmail.com';
-
-    const user = await User.create({ name, email });
-
     const now = new Date();
     const expiration = new Date(
       now.getFullYear(),
@@ -29,30 +25,7 @@ describe('CronJob', () => {
       now.getMilliseconds()
     );
 
-    await PollSet.create(
-      {
-        title: 'New Poll',
-        uuid: '',
-        status: PollSet.Status.ACTIVE,
-        allowpublic: true,
-        partial: true,
-        userId: user.get('id'),
-        expiration,
-        polls: [
-          {
-            question: 'the question',
-            maxselections: 1,
-            alternatives: [
-              { description: 'alternative 1' },
-              { description: 'alternative 2' }
-            ]
-          }
-        ]
-      },
-      {
-        include: [Poll]
-      }
-    );
+    await createFakePoll({ expiration });
 
     await delay(2000);
     await cronTask();

@@ -76,7 +76,7 @@ const typeDefs = gql`
 
   type Query {
     myPollSets: [PollSet!]
-    available: [PollSet!]
+    availableToAnswer: [PollSet!]
     publicPollSets: [PollSet!]
     votedPollSets: [PollSet!]
   }

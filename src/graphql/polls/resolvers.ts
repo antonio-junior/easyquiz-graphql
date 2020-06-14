@@ -43,10 +43,11 @@ const resolvers = {
       { email }: { email: string }
     ): Promise<PollSet> => {
       const pollSet = await PollSet.findByPk(id, { rejectOnEmpty: true });
-      const userInvites = await Invite.findAll({ where: { email } });
-      const invitesPollSetIds = userInvites.map(i => i.pollsetId);
+      const userInvites = await Invite.findAll({
+        where: { email, pollsetId: id }
+      });
 
-      if (!pollSet?.ispublic && !invitesPollSetIds.includes(id)) {
+      if (!pollSet.ispublic && userInvites.length === 0) {
         throw new AuthenticationError('Not Authorized');
       }
 
@@ -97,7 +98,7 @@ const resolvers = {
         where: { userId }
       });
     },
-    available: async (
+    availableToAnswer: async (
       _root: unknown,
       _p: unknown,
       { userId, email }: { userId: number; email: string }
