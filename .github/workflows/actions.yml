@@ -24,8 +24,8 @@ jobs:
       env:
         DB_IS_POSTGRES: ''
         DB_STORAGE: './__tests__/database.sqlite'
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
+    - name: Run codacy-coverage-reporter
+      uses: codacy/codacy-coverage-reporter-action@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: './__tests__/coverage/lcov.info'
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: ./__tests__/coverage/lcov.info
