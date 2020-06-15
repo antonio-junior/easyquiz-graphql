@@ -3,7 +3,7 @@
   "description": "GraphQL API for EasyPoll",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "license": "ISC",
+  "license": "MIT",
   "author": "Antônio Junior <acsjunior1@gmail.com>",
   "scripts": {
     "prebuild": "npm install --production",
