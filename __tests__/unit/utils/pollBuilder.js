@@ -7,7 +7,7 @@ import { createFakeUser } from './userBuilder';
 const getFakePoll = async () => {
   const user = await createFakeUser();
 
-  return {
+  const result = {
     title: faker.lorem.sentence(5),
     uuid: '',
     status: PollSet.Status.ACTIVE,
@@ -25,6 +25,8 @@ const getFakePoll = async () => {
       }
     ]
   };
+
+  return result;
 };
 
 const createFakePoll = async attrsToUpdate => {

@@ -18,6 +18,7 @@ const config = () => {
 
   const sequelize = new Sequelize({
     dialect: 'sqlite',
+    logging: false,
     storage: process.env.DB_STORAGE
   });
 

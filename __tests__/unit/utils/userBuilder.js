@@ -18,7 +18,9 @@ const createFakeUser = async () => {
     ...fakeUser,
     password: bcrypt.hashSync(fakeUser.password, 10)
   });
-  return { ...fakeUser, id: user.id };
+
+  const result = { ...fakeUser, id: user.id };
+  return result;
 };
 
 export { createFakeUser, getFakeUser };
