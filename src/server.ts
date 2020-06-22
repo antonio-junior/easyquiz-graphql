@@ -85,17 +85,26 @@ class Server {
     this.apolloServer.installSubscriptionHandlers(this.httpServer);
   }
 
+  public getSubscriptionURL(): string {
+    return `ws://localhost:${this.port}${this.apolloServer.subscriptionsPath}`;
+  }
+
   public listen(): void {
     this.httpServer.listen(this.port, () => {
-      // eslint-disable-next-line no-console
-      console.log(
-        `🚀 Server ready at http://localhost:${this.port}${this.apolloServer.graphqlPath}`
-      );
-      // eslint-disable-next-line no-console
-      console.log(
-        `🚀 Subscriptions ready at ws://localhost:${this.port}${this.apolloServer.subscriptionsPath}`
-      );
+      if (process.env.NODE_ENV !== 'test') {
+        // eslint-disable-next-line no-console
+        console.log(
+          `🚀 Server ready at http://localhost:${this.port}${this.apolloServer.graphqlPath}`
+        );
+        // eslint-disable-next-line no-console
+        console.log(`🚀 Subscriptions ready at ${this.getSubscriptionURL()}`);
+      }
     });
+  }
+
+  public close(): void {
+    this.job.stop();
+    this.httpServer.close();
   }
 }
 export default Server;

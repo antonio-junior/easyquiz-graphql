@@ -21,7 +21,11 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        partial: {
+        showpartial: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+        },
+        isquiz: {
           type: Sequelize.BOOLEAN,
           allowNull: false,
         },

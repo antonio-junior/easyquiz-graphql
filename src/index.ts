@@ -11,3 +11,5 @@ const PORT = process.env.PORT || 3000;
 const server = new Server({ port: Number(PORT) });
 
 server.listen();
+
+export default server;

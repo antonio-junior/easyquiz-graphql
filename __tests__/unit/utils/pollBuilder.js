@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import faker from 'faker';
+import _ from 'lodash';
 
 import { Poll, PollSet } from '../../../src/models';
 import { createFakeUser } from './userBuilder';
 
-const getFakePoll = async () => {
+const getFakePoll = async (attrsToUpdate = null) => {
   const user = await createFakeUser();
 
   const result = {
@@ -12,7 +13,8 @@ const getFakePoll = async () => {
     uuid: '',
     status: PollSet.Status.ACTIVE,
     ispublic: true,
-    partial: true,
+    showpartial: true,
+    isquiz: true,
     userId: user.id,
     polls: [
       {
@@ -26,17 +28,14 @@ const getFakePoll = async () => {
     ]
   };
 
-  return result;
+  return _.merge(result, attrsToUpdate);
 };
 
 const createFakePoll = async attrsToUpdate => {
-  const fakePoll = await getFakePoll();
-  const pollSet = await PollSet.create(
-    { ...fakePoll, ...attrsToUpdate },
-    {
-      include: [Poll]
-    }
-  );
+  const fakePoll = await getFakePoll(attrsToUpdate);
+  const pollSet = await PollSet.create(fakePoll, {
+    include: [Poll]
+  });
 
   return pollSet;
 };

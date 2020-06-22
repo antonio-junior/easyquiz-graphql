@@ -1,4 +1,5 @@
 import { PubSub, AuthenticationError } from 'apollo-server-express';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
 
@@ -154,26 +155,24 @@ const resolvers = {
       {
         title,
         ispublic,
-        partial,
+        showpartial,
+        isquiz,
         expiration,
-        userId,
         polls
       }: {
         title: string;
         ispublic: boolean;
-        partial: boolean;
+        showpartial: boolean;
+        isquiz: boolean;
         expiration: string;
-        userId: number;
         polls: PollInput[];
-      }
+      },
+      { userId }: { userId: number }
     ): Promise<PollSet> => {
       const expirationDate = moment.parseZone(expiration, 'DD-MM-YYYY hh:mm');
 
-      polls.forEach(({ maxselections, alternatives, question }) => {
-        if (maxselections > alternatives.length)
-          throw new Error('Max selections ccanot be greater than alternatives');
-
-        if (alternatives.every(alt => alt.isright === false)) {
+      polls.forEach(({ alternatives, question }) => {
+        if (isquiz && alternatives.every(alt => alt.isright === false)) {
           throw new Error(
             `'${question}' should have at least one right Alternative`
           );
@@ -186,7 +185,8 @@ const resolvers = {
           uuid: '',
           status: PollSet.Status.ACTIVE,
           ispublic,
-          partial,
+          showpartial,
+          isquiz,
           userId,
           expiration: expirationDate.isValid() ? expirationDate : null,
           polls

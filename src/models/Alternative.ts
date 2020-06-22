@@ -37,9 +37,4 @@ export default class Alternative extends Model<Alternative> {
 
   @HasMany(() => Answer, 'alternativeId')
   answers: Answer[] = [];
-
-  get countVotes(): number {
-    const arrVotes = this.getDataValue('answers');
-    return arrVotes.length;
-  }
 }

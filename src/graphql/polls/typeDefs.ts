@@ -7,7 +7,8 @@ const typeDefs = gql`
     uuid: String!
     status: String!
     ispublic: Boolean!
-    partial: Boolean!
+    showpartial: Boolean!
+    isquiz: Boolean!
     dtExpiration: String
     polls: [Poll!]!
     owner: User!
@@ -65,13 +66,13 @@ const typeDefs = gql`
     addInvites(invites: [InputInvite]!): Boolean
     addPoll(
       title: String!
-      ispublic: Boolean
-      partial: Boolean
+      ispublic: Boolean!
+      showpartial: Boolean!
+      isquiz: Boolean!
       expiration: String
-      userId: ID!
       polls: [PollInput]!
     ): PollSet
-    addAnswer(answers: [AnswerInput]): Boolean
+    addAnswer(answers: [AnswerInput]!): Boolean
   }
 
   type Query {

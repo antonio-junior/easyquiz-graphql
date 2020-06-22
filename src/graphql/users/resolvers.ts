@@ -7,6 +7,11 @@ import { User } from '../../models';
 
 export const COOKIE_NAME = '_JWT_COOKIE';
 
+export const tokenize = (email: string, userId: string): string =>
+  jwt.sign({ email, userId }, process.env.SECRET_KEY ?? 'secret', {
+    expiresIn: '1d'
+  });
+
 const resolvers = {
   Mutation: {
     login: async (
@@ -22,11 +27,7 @@ const resolvers = {
 
       if (!isValid) throw new AuthenticationError('Password incorrect');
 
-      const token = jwt.sign(
-        { email: user.email, userId: user.id },
-        process.env.SECRET_KEY ?? 'secret',
-        { expiresIn: '1d' }
-      );
+      const token = tokenize(user.email, user.id);
 
       res.cookie(COOKIE_NAME, token, {
         httpOnly: true

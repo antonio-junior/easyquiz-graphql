@@ -53,7 +53,10 @@ export default class PollSet extends Model<PollSet> {
   ispublic?: boolean;
 
   @Column(DataType.BOOLEAN)
-  partial!: boolean;
+  showpartial!: boolean;
+
+  @Column(DataType.BOOLEAN)
+  isquiz!: boolean;
 
   @CreatedAt
   @Column(DataType.DATE)
@@ -81,19 +84,19 @@ export default class PollSet extends Model<PollSet> {
   @HasMany(() => Poll, 'pollSetId')
   polls!: Poll[];
 
-  get isQuiz(): boolean {
-    return this.getDataValue('polls').length > 1;
-  }
-
-  get totalAnswers(): number {
+  get userAnswers(): number {
     const [poll] = this.getDataValue('polls');
     const alternatives = poll.getDataValue('alternatives');
 
-    return alternatives.reduce((acc, alternative) => {
+    const emails: string[] = [];
+
+    alternatives.forEach(alternative => {
       const answers = alternative.getDataValue('answers');
-      const uniqueAnswers = new Set(answers.map(({ email }) => email));
-      return acc + uniqueAnswers.size;
-    }, 0);
+      const answerEmails = answers.map(({ email }) => email);
+      emails.push(...answerEmails);
+    });
+
+    return new Set(emails).size;
   }
 
   @ForeignKey(() => User)
