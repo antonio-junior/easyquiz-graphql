@@ -67,18 +67,24 @@ export default class PollSet extends Model<PollSet> {
   expiration?: Date;
 
   get dtExpiration(): string {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: false
-    };
+    const date = this.getDataValue('expiration');
 
-    return new Intl.DateTimeFormat('pt-BR', options).format(
-      this.getDataValue('expiration')
+    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(
+      date
     );
+    const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(
+      date
+    );
+    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+    const hour = new Intl.DateTimeFormat('en', {
+      hour: 'numeric',
+      hour12: false
+    }).format(date);
+    const minute = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(
+      date
+    );
+
+    return `${day}/${month}/${year} ${hour}:${minute}`;
   }
 
   @HasMany(() => Poll, 'pollSetId')

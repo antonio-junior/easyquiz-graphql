@@ -22,7 +22,7 @@ describe('Server Test', () => {
       .end((err, res) => {
         if (err) return done(err);
         expect(res).toHaveProperty('body.data.publicPollSets');
-        done();
+        return done();
       });
   });
 
@@ -37,7 +37,7 @@ describe('Server Test', () => {
       .end((err, res) => {
         if (err) return done(err);
         expect(res).toHaveProperty('body.data.publicPollSets');
-        done();
+        return done();
       });
   });
 
@@ -53,11 +53,12 @@ describe('Server Test', () => {
       .end((err, res) => {
         if (err) return done(err);
         expect(res).toHaveProperty('body.data.publicPollSets');
-        done();
+        return done();
       });
   });
 
-  test('should have a subscriptionURL', () => {
+  test('should have URLs', () => {
     expect(server.getSubscriptionURL()).not.toBeNull();
+    expect(server.getServerURL()).not.toBeNull();
   });
 });

@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc",
     "ts-lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "start": "pm2 start dist/index.js",
-    "dev": "nodemon --watch \"src\" --exec \"tsc && node dist/index.js\" -e ts,js",
+    "start": "pm2-runtime dist/index.js",
+    "dev": "NODE_ENV=development nodemon --watch \"src\" --exec \"tsc && node dist/index.js\" -e ts,js",
     "pretest": "NODE_ENV=test sequelize db:migrate",
     "posttest": "NODE_ENV=test sequelize db:migrate:undo:all",
     "test": "NODE_ENV=test jest --coverage --detectOpenHandles --forceExit",

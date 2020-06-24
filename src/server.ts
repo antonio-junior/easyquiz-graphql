@@ -89,13 +89,15 @@ class Server {
     return `ws://localhost:${this.port}${this.apolloServer.subscriptionsPath}`;
   }
 
+  public getServerURL(): string {
+    return `http://localhost:${this.port}${this.apolloServer.graphqlPath}`;
+  }
+
   public listen(): void {
     this.httpServer.listen(this.port, () => {
-      if (process.env.NODE_ENV !== 'test') {
+      if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
-        console.log(
-          `🚀 Server ready at http://localhost:${this.port}${this.apolloServer.graphqlPath}`
-        );
+        console.log(`🚀 Server ready at ${this.getServerURL()}`);
         // eslint-disable-next-line no-console
         console.log(`🚀 Subscriptions ready at ${this.getSubscriptionURL()}`);
       }

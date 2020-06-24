@@ -1,5 +1,4 @@
 import { PubSub, AuthenticationError } from 'apollo-server-express';
-import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
 
@@ -188,7 +187,7 @@ const resolvers = {
           showpartial,
           isquiz,
           userId,
-          expiration: expirationDate.isValid() ? expirationDate : null,
+          expiration: expirationDate.isValid() ? expirationDate.toDate() : null,
           polls
         },
         {

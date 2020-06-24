@@ -112,7 +112,7 @@ describe('Test Poll Mutations', () => {
 
   test('should add a PollSet', async () => {
     const pollData = await getFakePoll({
-      expiration: '12-06-2022 16:40'
+      expiration: '14-06-2022 16:40'
     });
 
     const pollQuery = gql`
@@ -142,7 +142,7 @@ describe('Test Poll Mutations', () => {
       data: {
         addPoll: {
           title: pollData.title,
-          dtExpiration: '12/06/2022 16:40'
+          dtExpiration: '14/06/2022 16:40'
         }
       }
     };
