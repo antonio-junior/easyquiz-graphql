@@ -66,23 +66,23 @@ export default class PollSet extends Model<PollSet> {
   @Column(DataType.DATE)
   expiration?: Date;
 
-  get dtExpiration(): string {
+  getDateField = (fieldDescription: {
+    [field: string]: 'numeric' | '2-digit' | boolean;
+  }): string => {
     const date = this.getDataValue('expiration');
 
-    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(
-      date
-    );
-    const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(
-      date
-    );
-    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
-    const hour = new Intl.DateTimeFormat('en', {
+    return new Intl.DateTimeFormat('en', fieldDescription).format(date);
+  };
+
+  get dtExpiration(): string {
+    const year = this.getDateField({ year: 'numeric' });
+    const month = this.getDateField({ month: '2-digit' });
+    const day = this.getDateField({ day: '2-digit' });
+    const minute = this.getDateField({ minute: 'numeric' });
+    const hour = this.getDateField({
       hour: 'numeric',
       hour12: false
-    }).format(date);
-    const minute = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(
-      date
-    );
+    });
 
     return `${day}/${month}/${year} ${hour}:${minute}`;
   }
