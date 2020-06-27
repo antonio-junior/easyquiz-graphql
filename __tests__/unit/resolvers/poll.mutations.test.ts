@@ -105,7 +105,9 @@ describe('Test Poll Mutations', () => {
     });
     expect(result).toEqual(expected);
 
-    const updatedPollSet = await PollSet.findByPk(pollSet.id);
+    const updatedPollSet = await PollSet.findByPk(pollSet.id, {
+      rejectOnEmpty: false
+    });
 
     expect(updatedPollSet.userAnswers).toEqual(2);
   });

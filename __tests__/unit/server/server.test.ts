@@ -4,7 +4,7 @@ import { COOKIE_NAME, tokenize } from '../../../src/graphql/users/resolvers';
 import server from '../../../src/index';
 import config from '../../config-sequelize';
 import { createFakePoll } from '../utils/pollBuilder';
-import { getFakeUser } from '../utils/userBuilder';
+import { createFakeUser } from '../utils/userBuilder';
 
 config();
 
@@ -42,8 +42,8 @@ describe('Server Test', () => {
   });
 
   test('should start server with a valid token', async done => {
-    const { email, id } = getFakeUser();
-    const token = tokenize(email, id);
+    const { email, id } = await createFakeUser();
+    const token = tokenize(email, id || '0');
 
     request(server.app)
       .post('/graphql')

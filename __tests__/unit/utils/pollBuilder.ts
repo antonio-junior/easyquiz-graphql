@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { Poll, PollSet } from '../../../src/models';
 import { createFakeUser } from './userBuilder';
 
-const getFakePoll = async (attrsToUpdate = null) => {
+const getFakePoll = async (attrsToUpdate: object | null | undefined = null) => {
   const user = await createFakeUser();
 
   const result = {
@@ -14,6 +14,7 @@ const getFakePoll = async (attrsToUpdate = null) => {
     status: PollSet.Status.ACTIVE,
     ispublic: true,
     showpartial: true,
+    expiration: null,
     isquiz: true,
     userId: user.id,
     polls: [
@@ -31,7 +32,9 @@ const getFakePoll = async (attrsToUpdate = null) => {
   return _.merge(result, attrsToUpdate);
 };
 
-const createFakePoll = async attrsToUpdate => {
+const createFakePoll = async (
+  attrsToUpdate: object | null | undefined = null
+) => {
   const fakePoll = await getFakePoll(attrsToUpdate);
   const pollSet = await PollSet.create(fakePoll, {
     include: [Poll]

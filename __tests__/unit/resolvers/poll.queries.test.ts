@@ -25,7 +25,7 @@ describe('Test Poll Queries', () => {
       }
     `;
 
-    const owner = await User.findByPk(poll.userId);
+    const owner = await User.findByPk(poll.userId, { rejectOnEmpty: false });
 
     const expected = {
       data: {
@@ -66,7 +66,7 @@ describe('Test Poll Queries', () => {
       }
     `;
 
-    const owner = await User.findByPk(poll.userId);
+    const owner = await User.findByPk(poll.userId, { rejectOnEmpty: false });
 
     const expected = {
       data: {
@@ -129,10 +129,7 @@ describe('Test Poll Queries', () => {
     await createFakePoll({ ispublic: false });
     await createFakePoll({ ispublic: true });
 
-    const allPublic = await PollSet.findAll(
-      { where: { ispublic: true } },
-      { raw: true }
-    );
+    const allPublic = await PollSet.findAll({ where: { ispublic: true } });
 
     const allPublicTitle = allPublic.map(({ title }) => {
       return { title };
@@ -194,7 +191,7 @@ describe('Test Poll Queries', () => {
       }
     `;
 
-    const owner = await User.findByPk(poll.userId);
+    const owner = await User.findByPk(poll.userId, { rejectOnEmpty: false });
 
     const expected = {
       data: {
@@ -219,13 +216,10 @@ describe('Test Poll Queries', () => {
 
   test('should return polls available to answer (public and invited)', async () => {
     const poll = await createFakePoll({ ispublic: false });
-    const owner = await User.findByPk(poll.userId);
+    const owner = await User.findByPk(poll.userId, { rejectOnEmpty: false });
     await Invite.create({ email: owner.email, pollsetId: poll.id });
 
-    const allPublic = await PollSet.findAll(
-      { where: { ispublic: true } },
-      { raw: true }
-    );
+    const allPublic = await PollSet.findAll({ where: { ispublic: true } });
 
     const allPublicTitle = allPublic.map(({ title }) => {
       return { title };

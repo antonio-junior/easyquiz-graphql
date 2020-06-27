@@ -4,7 +4,14 @@ import faker from 'faker';
 
 import { User } from '../../../src/models';
 
-const getFakeUser = () => {
+export interface UserTest {
+  email: string;
+  password: string;
+  name: string;
+  id?: string;
+}
+
+const getFakeUser = (): UserTest => {
   return {
     email: faker.internet.email(),
     password: faker.internet.password(6),
@@ -12,7 +19,7 @@ const getFakeUser = () => {
   };
 };
 
-const createFakeUser = async () => {
+const createFakeUser = async (): Promise<UserTest> => {
   const fakeUser = getFakeUser();
   const user = await User.create({
     ...fakeUser,

@@ -1,5 +1,7 @@
 import { gql, PubSub } from 'apollo-server-express';
 import { graphql, subscribe, parse } from 'graphql';
+import { ExecutionResult } from 'graphql-tools';
+import { ExecutionResultDataDefault } from 'graphql/execution/execute';
 
 import schema from '../../../src/graphql/schema';
 import config from '../../config-sequelize';
@@ -60,12 +62,12 @@ describe('Test Poll Subscriptions', () => {
       variablesMutation
     );
 
-    const result = await subscribe(
+    const result = (await subscribe(
       schema,
       parse(subscription),
       triggerSubscription,
       newContext
-    );
+    )) as AsyncIterableIterator<ExecutionResult<ExecutionResultDataDefault>>;
 
     const resultData = await result.next();
 

@@ -10,8 +10,7 @@ import {
   User
 } from '../src/models';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const config = () => {
+const config = (): void => {
   dotenv.config({
     path: '.env.test'
   });

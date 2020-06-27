@@ -8,14 +8,9 @@ import { createFakeUser, getFakeUser } from '../utils/userBuilder';
 
 config();
 
-let user = null;
-
 describe('Test user operations', () => {
-  beforeAll(async () => {
-    user = await createFakeUser();
-  });
-
   test('user should login', async () => {
+    const user = await createFakeUser();
     const loginMutation = gql`
       mutation LOGIN_MUTATION($email: String!, $password: String!) {
         login(email: $email, password: $password) {
@@ -108,12 +103,13 @@ describe('Test user operations', () => {
 
     const result = await tester.graphql(loginMutation, undefined, context, {
       email: faker.internet.email(),
-      password: user.password
+      password: faker.internet.password(6)
     });
     expect(result).toEqual(expected);
   });
 
   test('user should not login with invalid password', async () => {
+    const user = await createFakeUser();
     const loginMutation = gql`
       mutation LOGIN_MUTATION($email: String!, $password: String!) {
         login(email: $email, password: $password) {
@@ -136,7 +132,8 @@ describe('Test user operations', () => {
     expect(result).toEqual(expected);
   });
 
-  test('should not create a user with email already taken', async () => {
+  test('should not create a user with email that already exists', async () => {
+    const user = await createFakeUser();
     const addUserMutation = gql`
       mutation ADDUSER_MUTATION(
         $name: String!
@@ -158,7 +155,7 @@ describe('Test user operations', () => {
 
     const result = await tester.graphql(addUserMutation, undefined, context, {
       email: user.email,
-      password: faker.internet.password(),
+      password: faker.internet.password(6),
       name: user.name
     });
     expect(result).toEqual(expected);

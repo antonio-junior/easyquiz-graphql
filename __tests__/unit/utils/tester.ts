@@ -8,7 +8,8 @@ const tester = new EasyGraphQLTester(typeDefsString, resolvers);
 const context = {
   req: { cookies: [] },
   res: {
-    cookie: (name, val, opt) => `Cookie added: ${name}, ${val}, ${opt}`
+    cookie: (name: string, val: string, opt: string): string =>
+      `Cookie added: ${name}, ${val}, ${opt}`
   }
 };
 

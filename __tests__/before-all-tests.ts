@@ -10,8 +10,7 @@ import config from './config-sequelize';
 
 config();
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-module.exports = async () => {
+const truncateAll = async (): Promise<void> => {
   await Answer.destroy({ truncate: true, force: true });
   await Alternative.destroy({ truncate: true, force: true });
   await Invite.destroy({ truncate: true, force: true });
@@ -19,3 +18,5 @@ module.exports = async () => {
   await PollSet.destroy({ truncate: true, force: true });
   await User.destroy({ truncate: true, force: true });
 };
+
+export default truncateAll;
