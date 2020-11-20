@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-express';
-import bcrypt from 'bcrypt';
+import CryptoJS from 'crypto-js';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -12,6 +12,8 @@ export const tokenize = (email: string, userId: string): string =>
     expiresIn: '1d'
   });
 
+export const encrypt = (pwd: string): string => CryptoJS.SHA256(pwd).toString();
+
 const resolvers = {
   Mutation: {
     login: async (
@@ -20,10 +22,11 @@ const resolvers = {
       { res }: { res: Response }
     ): Promise<User> => {
       const user = await User.findOne({ where: { email } });
-
       if (!user) throw new AuthenticationError('Email does not exist');
 
-      const isValid = bcrypt.compareSync(password, user.password);
+      const encrypted = encrypt(password);
+
+      const isValid = encrypted === user.password;
 
       if (!isValid) throw new AuthenticationError('Password incorrect');
 
@@ -57,7 +60,7 @@ const resolvers = {
       const user = await User.findOne({ where: { email } });
       if (user) throw new Error('Email already in use');
 
-      const hash = bcrypt.hashSync(password, 10);
+      const hash = encrypt(password);
 
       const newuser = await User.create({ name, email, password: hash });
 

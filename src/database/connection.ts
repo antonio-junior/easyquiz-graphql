@@ -10,7 +10,7 @@ dotenv.config({
 const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  dialect: process.env.DB_IS_POSTGRES ? 'postgres' : 'sqlite',
+  dialect: process.env.NODE_ENV === 'test' ? 'sqlite' : 'postgres',
   username: process.env.DB_USER,
   password: process.env.DB_PWD,
   logging: false,
