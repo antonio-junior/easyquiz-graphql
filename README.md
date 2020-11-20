@@ -11,18 +11,17 @@
 
 ## Stack
 
-
-## Commands:
+## Useful Commands
 
 First of all, create a .env file and configure its variables following .env.example
 
 Run tests  
-```
+```sh
 npm test
 ```
 
 Starts database container
-```
+```sh
 docker run -d --name postgres \
 -e POSTGRES_DB=<DB_NAME> \
 -e POSTGRES_PASSWORD=<DB_PASSWORD> \
@@ -33,26 +32,26 @@ postgres:12
 ```
 
 Run application locally in dev mode
-```
+```sh
 npm run dev
 ```
 
 Build image from Dockerfile
-```
+```sh
 docker build -t <IMAGE_NAME>:<TAG> .
 ```
 
 Start services specified in docker-compose.yml
-```
+```sh
 docker-compose up -d
 ```
 
 Build the service before starting services
-```
+```sh
 docker-compose up -d --build
 ```
 
 Start application in a container from docker hub image
-```
+```sh
 docker run --name easypoll-graphql -it --env-file .env antoniocsjunior/easypoll-graphql
 ```
