@@ -52,7 +52,7 @@ Build the service before starting services
 docker-compose up -d --build
 ```
 
-Start application in a container
+Start application in a container from docker hub image
 ```
-docker run --name easypoll-graphql -it --env-file .env <IMAGE>
+docker run --name easypoll-graphql -it --env-file .env antoniocsjunior/easypoll-graphql
 ```
