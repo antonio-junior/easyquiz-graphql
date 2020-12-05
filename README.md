@@ -53,5 +53,5 @@ docker-compose up -d --build
 
 Start application in a container from docker hub image
 ```sh
-docker run --name easypoll-graphql -it --env-file .env antoniocsjunior/easypoll-graphql
+docker run --name easypoll-graphql -d --env-file .env -p <PORT>:<PORT> antoniocsjunior/easypoll-graphql
 ```

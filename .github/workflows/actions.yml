@@ -24,7 +24,6 @@ jobs:
     - name: Tests
       run: npm run test
       env:
-        DB_IS_POSTGRES: ''
         DB_STORAGE: './__tests__/database.sqlite'
     - name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@master

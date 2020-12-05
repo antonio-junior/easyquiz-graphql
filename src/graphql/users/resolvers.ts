@@ -60,9 +60,7 @@ const resolvers = {
       const user = await User.findOne({ where: { email } });
       if (user) throw new Error('Email already in use');
 
-      const hash = encrypt(password);
-
-      const newuser = await User.create({ name, email, password: hash });
+      const newuser = await User.create({ name, email, password });
 
       return newuser;
     }

@@ -1,6 +1,5 @@
 import faker from 'faker';
 
-import { encrypt } from '../../../src/graphql/users/resolvers';
 import { User } from '../../../src/models';
 
 export interface UserTest {
@@ -21,12 +20,7 @@ const getFakeUser = (): UserTest => {
 const createFakeUser = async (): Promise<UserTest> => {
   const fakeUser = getFakeUser();
 
-  const password = encrypt(fakeUser.password);
-
-  const user = await User.create({
-    ...fakeUser,
-    password
-  });
+  const user = await User.create(fakeUser);
 
   const result = { ...fakeUser, id: user.id };
   return result;

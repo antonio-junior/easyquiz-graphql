@@ -44,7 +44,7 @@ export default class PollSet extends Model<PollSet> {
   title!: string;
 
   @Column(DataType.TEXT)
-  uuid!: string;
+  uuid?: string;
 
   @Column(DataType.TEXT)
   status!: string;

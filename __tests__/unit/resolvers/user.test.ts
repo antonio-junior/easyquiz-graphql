@@ -8,7 +8,7 @@ import { createFakeUser, getFakeUser } from '../utils/userBuilder';
 
 config();
 
-describe('Test user operations', () => {
+describe.only('Test user operations', () => {
   test('user should login', async () => {
     const user = await createFakeUser();
     const loginMutation = gql`

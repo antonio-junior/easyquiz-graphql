@@ -10,7 +10,6 @@ const getFakePoll = async (attrsToUpdate: object | null | undefined = null) => {
 
   const result = {
     title: faker.lorem.sentence(5),
-    uuid: '',
     status: PollSet.Status.ACTIVE,
     ispublic: true,
     showpartial: true,

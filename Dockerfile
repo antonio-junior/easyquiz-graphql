@@ -24,4 +24,10 @@ WORKDIR /app
 COPY --from=BUILD_IMAGE /app/dist ./dist
 COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
 
-CMD ["node", "dist/index.js"]
+COPY --from=BUILD_IMAGE /app/dist/database/config.js /app/config/config.js
+COPY --from=BUILD_IMAGE /app/dist/database/migrations /app/migrations
+
+COPY --from=BUILD_IMAGE /app/start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+CMD ["sh", "/app/start.sh"]
