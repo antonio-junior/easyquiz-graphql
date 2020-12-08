@@ -5,15 +5,17 @@ import {
   Column,
   DataType,
   ForeignKey,
+  IsEmail,
   Model
 } from 'sequelize-typescript';
 
-import PollSet from './PollSet';
+import Quiz from './Quiz';
 
 @Table({
   tableName: 'invites'
 })
 export default class Invite extends Model<Invite> {
+  @IsEmail
   @NotEmpty
   @Column(DataType.TEXT)
   email!: string;
@@ -22,7 +24,7 @@ export default class Invite extends Model<Invite> {
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @ForeignKey(() => PollSet)
+  @ForeignKey(() => Quiz)
   @Column(DataType.INTEGER)
-  pollsetId!: number;
+  quizId!: number;
 }

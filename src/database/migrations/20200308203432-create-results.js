@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable(
-      'answers',
+      'results',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -9,15 +9,21 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
-        email: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        alternativeId: {
+        userId: {
           type: Sequelize.INTEGER,
           references: {
             model: {
-              tableName: 'alternatives',
+              tableName: 'users',
+            },
+            key: 'id'
+          },
+          allowNull: false
+        },
+        quizId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: {
+              tableName: 'quizes',
             },
             key: 'id'
           },
@@ -37,5 +43,5 @@ module.exports = {
       },
     ),
 
-  down: (queryInterface, _Sequelize) => queryInterface.dropTable('answers'),
+  down: (queryInterface, _Sequelize) => queryInterface.dropTable('results'),
 };

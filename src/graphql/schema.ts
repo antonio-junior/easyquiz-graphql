@@ -1,13 +1,13 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { mergeTypeDefs } from 'graphql-tools-merge-typedefs';
 
-import PollResolvers from './polls/resolvers';
-import PollTypeDef from './polls/typeDefs';
-import UserResolvers from './users/resolvers';
-import UserTypeDef from './users/typeDefs';
+import QuizResolvers from './quiz/resolvers';
+import QuizTypeDef from './quiz/typeDefs';
+import UserResolvers from './user/resolvers';
+import UserTypeDef from './user/typeDefs';
 
-export const resolvers = [UserResolvers, PollResolvers];
-export const typeDefs = [UserTypeDef, PollTypeDef];
+export const resolvers = [UserResolvers, QuizResolvers];
+export const typeDefs = [UserTypeDef, QuizTypeDef];
 
 const schema = makeExecutableSchema({
   typeDefs: mergeTypeDefs(typeDefs),

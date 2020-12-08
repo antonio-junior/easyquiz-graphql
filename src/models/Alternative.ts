@@ -1,7 +1,5 @@
 import {
   NotEmpty,
-  DefaultScope,
-  HasMany,
   CreatedAt,
   Table,
   Column,
@@ -11,30 +9,28 @@ import {
 } from 'sequelize-typescript';
 
 import Answer from './Answer';
-import Poll from './Poll';
+import Question from './Question';
 
-@DefaultScope(() => ({
-  include: [Answer]
-}))
 @Table({
   tableName: 'alternatives'
 })
 export default class Alternative extends Model<Alternative> {
   @NotEmpty
   @Column(DataType.TEXT)
-  description!: string;
+  text!: string;
 
   @Column(DataType.BOOLEAN)
-  isright?: boolean;
+  isRight?: boolean;
 
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @ForeignKey(() => Poll)
+  @ForeignKey(() => Question)
   @Column(DataType.INTEGER)
-  pollId!: number;
+  questionId!: number;
 
-  @HasMany(() => Answer, 'alternativeId')
-  answers: Answer[] = [];
+  @ForeignKey(() => Answer)
+  @Column(DataType.INTEGER)
+  answerId!: number;
 }

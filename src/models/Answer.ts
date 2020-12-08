@@ -1,6 +1,5 @@
 import {
-  IsEmail,
-  CreatedAt,
+  HasMany,
   Table,
   Column,
   DataType,
@@ -9,20 +8,16 @@ import {
 } from 'sequelize-typescript';
 
 import Alternative from './Alternative';
+import Question from './Question';
 
 @Table({
   tableName: 'answers'
 })
 export default class Answer extends Model<Answer> {
-  @IsEmail
-  @Column(DataType.TEXT)
-  email!: string;
+  @HasMany(() => Alternative, 'answerId')
+  alternatives!: Alternative[];
 
-  @CreatedAt
-  @Column(DataType.DATE)
-  createdAt!: Date;
-
-  @ForeignKey(() => Alternative)
+  @ForeignKey(() => Question)
   @Column(DataType.INTEGER)
-  alternativeId!: number;
+  questionId!: number;
 }

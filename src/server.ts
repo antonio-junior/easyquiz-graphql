@@ -10,7 +10,7 @@ import { ExecutionParams } from 'subscriptions-transport-ws';
 import { cronTime, cronTask } from './cron/CronJob';
 import sequelize from './database/connection';
 import schema from './graphql/schema';
-import { COOKIE_NAME } from './graphql/users/resolvers';
+import { COOKIE_NAME } from './graphql/user/resolvers';
 
 interface UserContext {
   userId: number;
@@ -62,7 +62,7 @@ class Server {
       try {
         const user = jwt.verify(
           token,
-          process.env.SECRET_KEY ?? 'secret'
+          process.env.SECRET_KEY as string
         ) as UserContext;
 
         return { pubSub: this.pubSub, res, ...user };

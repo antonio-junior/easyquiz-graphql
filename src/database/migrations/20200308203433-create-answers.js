@@ -1,21 +1,13 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable(
-      'alternatives',
+      'answers',
       {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
-        },
-        text: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        isRight: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
         },
         questionId: {
           type: Sequelize.INTEGER,
@@ -27,15 +19,15 @@ module.exports = {
           },
           allowNull: false
         },
-        answerId: {
+        resultId: {
           type: Sequelize.INTEGER,
           references: {
             model: {
-              tableName: 'answers',
+              tableName: 'results',
             },
             key: 'id'
           },
-          allowNull: true
+          allowNull: false
         },
         createdAt: {
           type: Sequelize.DATE,
@@ -51,5 +43,5 @@ module.exports = {
       },
     ),
 
-  down: (queryInterface, _Sequelize) => queryInterface.dropTable('alternatives'),
+  down: (queryInterface, _Sequelize) => queryInterface.dropTable('answers'),
 };

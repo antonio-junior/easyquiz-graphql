@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable(
-      'invites',
+      'quizes',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -9,15 +9,37 @@ module.exports = {
           autoIncrement: true,
           allowNull: false,
         },
-        email: {
+        title: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        pollsetId: {
+        uuid: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        status: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        showPartial: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: true,
+          allowNull: false,
+        },
+        isPublic: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: true,
+          allowNull: false,
+        },
+        expiration: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
+        userId: {
           type: Sequelize.INTEGER,
           references: {
             model: {
-              tableName: 'pollsets',
+              tableName: 'users',
             },
             key: 'id'
           },
@@ -37,5 +59,5 @@ module.exports = {
       },
     ),
 
-  down: (queryInterface, _Sequelize) => queryInterface.dropTable('invites'),
+  down: (queryInterface, _Sequelize) => queryInterface.dropTable('quizes'),
 };

@@ -12,30 +12,27 @@ import {
 } from 'sequelize-typescript';
 
 import Alternative from './Alternative';
-import PollSet from './PollSet';
+import Quiz from './Quiz';
 
 @DefaultScope(() => ({
   include: [Alternative]
 }))
 @Table({
-  tableName: 'polls'
+  tableName: 'questions'
 })
-export default class Poll extends Model<Poll> {
+export default class Question extends Model<Question> {
   @NotEmpty
   @Column(DataType.TEXT)
-  question!: string;
-
-  @Column(DataType.INTEGER)
-  maxselections!: number;
+  query!: string;
 
   @CreatedAt
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @HasMany(() => Alternative, 'pollId')
+  @HasMany(() => Alternative, 'questionId')
   alternatives!: Alternative[];
 
-  @ForeignKey(() => PollSet)
+  @ForeignKey(() => Quiz)
   @Column(DataType.INTEGER)
-  pollSetId!: number;
+  quizId!: number;
 }

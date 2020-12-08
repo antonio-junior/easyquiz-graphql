@@ -5,15 +5,15 @@ import { ExecutionResultDataDefault } from 'graphql/execution/execute';
 
 import schema from '../../../src/graphql/schema';
 import config from '../../config-sequelize';
-import { createFakePoll } from '../utils/pollBuilder';
+import { createFakeQuiz } from '../utils/quizBuilder';
 import { tester, context } from '../utils/tester';
 import { getFakeUser } from '../utils/userBuilder';
 
 config();
 
-describe('Test Poll Subscriptions', () => {
+describe('Test Query Subscriptions', () => {
   test('should validate invite subscription', async () => {
-    const pollSubscription = gql`
+    const querySubscription = gql`
       subscription {
         invited {
           id
@@ -22,27 +22,30 @@ describe('Test Poll Subscriptions', () => {
       }
     `;
 
-    tester.test(true, pollSubscription);
+    tester.test(true, querySubscription);
   });
 
   test('should subscribe to invites', async () => {
-    const poll = await createFakePoll();
+    const quiz = await createFakeQuiz();
     const userToInvite = getFakeUser();
 
     const newContext = {
       ...context,
       pubSub: new PubSub(),
-      userId: poll.userId
+      userId: quiz.userId
     };
 
     const mutation = `
-      mutation POLL_MUTATION($invites: [InputInvite]!) {
-        addInvites(invites: $invites)
+      mutation QUIZ_MUTATION($quizId: ID!, $email: String!) {
+        addInvite(quizId: $quizId, email: $email) {
+          quizId
+        }
       }
     `;
 
     const variablesMutation = {
-      invites: [{ pollsetId: poll.id, email: userToInvite.email }]
+      quizId: quiz.id,
+      email: userToInvite.email
     };
 
     const subscription = `
@@ -73,8 +76,8 @@ describe('Test Poll Subscriptions', () => {
 
     const expected = {
       invited: {
-        id: poll.id.toString(),
-        title: poll.title
+        id: quiz.id.toString(),
+        title: quiz.title
       }
     };
 

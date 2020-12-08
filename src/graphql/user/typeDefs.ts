@@ -5,7 +5,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    pollsets: [PollSet!]
+    quizes: [Quiz!]
   }
 
   type Mutation {

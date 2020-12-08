@@ -11,10 +11,11 @@ import {
   BeforeUpdate
 } from 'sequelize-typescript';
 
-import { encrypt } from '../graphql/users/resolvers';
-import PollSet from './PollSet';
+import { encrypt } from '../graphql/user/resolvers';
+import Quiz from './Quiz';
+
 @DefaultScope(() => ({
-  include: [PollSet]
+  include: [Quiz]
 }))
 @Table({
   tableName: 'users'
@@ -27,7 +28,7 @@ export default class User extends Model<User> {
     instance.password = encrypt(instance.password);
   }
 
-  @Length({ min: 3, max: 30 })
+  @Length({ min: 3 })
   @Column(DataType.TEXT)
   name!: string;
 
@@ -35,9 +36,10 @@ export default class User extends Model<User> {
   @Column(DataType.TEXT)
   email!: string;
 
+  @Length({ min: 6, max: 10 })
   @Column(DataType.TEXT)
   password!: string;
 
-  @HasMany(() => PollSet, 'userId')
-  pollSets?: PollSet[];
+  @HasMany(() => Quiz, 'userId')
+  quizes?: Quiz[];
 }

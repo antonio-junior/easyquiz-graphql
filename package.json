@@ -7,6 +7,7 @@
   "author": "Antônio Junior <acsjunior1@gmail.com>",
   "scripts": {
     "copy-files": "copyfiles -u 1 src/**/*.js src/database/migrations/*.js dist/",
+    "prettier": "prettier \"src/**/*.ts\"",
     "build": "tsc && npm run copy-files",
     "ts-lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "start": "node dist/index.js",

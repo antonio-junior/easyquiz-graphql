@@ -1,8 +1,9 @@
 import Alternative from './Alternative';
 import Answer from './Answer';
 import Invite from './Invite';
-import Poll from './Poll';
-import PollSet from './PollSet';
+import Question from './Question';
+import Quiz from './Quiz';
+import Result from './Result';
 import User from './User';
 
-export { Alternative, Answer, Poll, PollSet, User, Invite };
+export { Alternative, Answer, Invite, Question, Quiz, Result, User };

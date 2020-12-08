@@ -1,7 +1,7 @@
 import { cronTime, cronTask } from '../../../src/cron/CronJob';
-import { PollSet } from '../../../src/models';
+import { Quiz } from '../../../src/models';
 import config from '../../config-sequelize';
-import { createFakePoll } from '../utils/pollBuilder';
+import { createFakeQuiz } from '../utils/quizBuilder';
 
 config();
 
@@ -25,13 +25,13 @@ describe('CronJob', () => {
       now.getMilliseconds()
     );
 
-    await createFakePoll({ expiration });
+    await createFakeQuiz({ expiration });
 
     await delay(2000);
     await cronTask();
 
-    const closeds = await PollSet.findAll({
-      where: { status: PollSet.Status.CLOSED }
+    const closeds = await Quiz.findAll({
+      where: { status: Quiz.Status.CLOSED }
     });
 
     expect(closeds.length).toBe(1);

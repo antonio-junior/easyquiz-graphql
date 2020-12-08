@@ -14,8 +14,9 @@ import {
 } from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 
-import Poll from './Poll';
+import Question from './Question';
 import User from './User';
+import Result from './Result';
 
 enum Status {
   ACTIVE = 'ACTIVE',
@@ -25,14 +26,14 @@ enum Status {
 
 const TODAY = new Date().toISOString();
 @DefaultScope(() => ({
-  include: [Poll]
+  include: [Question]
 }))
 @Table({
-  tableName: 'pollsets'
+  tableName: 'quizes'
 })
-export default class PollSet extends Model<PollSet> {
+export default class Quiz extends Model<Quiz> {
   @BeforeCreate
-  static initValues(instance: PollSet): void {
+  static initValues(instance: Quiz): void {
     instance.uuid = uuidv4();
     instance.status = Status.ACTIVE;
   }
@@ -47,24 +48,21 @@ export default class PollSet extends Model<PollSet> {
   uuid?: string;
 
   @Column(DataType.TEXT)
-  status!: string;
+  status?: string;
 
   @Column(DataType.BOOLEAN)
-  ispublic?: boolean;
+  showPartial?: boolean;
 
   @Column(DataType.BOOLEAN)
-  showpartial!: boolean;
-
-  @Column(DataType.BOOLEAN)
-  isquiz!: boolean;
-
-  @CreatedAt
-  @Column(DataType.DATE)
-  createdAt!: Date;
+  isPublic?: boolean;
 
   @IsAfter(TODAY)
   @Column(DataType.DATE)
   expiration?: Date;
+
+  @CreatedAt
+  @Column(DataType.DATE)
+  createdAt!: Date;
 
   getDateField = (fieldDescription: {
     [field: string]: 'numeric' | '2-digit' | boolean;
@@ -87,23 +85,11 @@ export default class PollSet extends Model<PollSet> {
     return `${day}/${month}/${year} ${hour}:${minute}`;
   }
 
-  @HasMany(() => Poll, 'pollSetId')
-  polls!: Poll[];
+  @HasMany(() => Question, 'quizId')
+  questions!: Question[];
 
-  get userAnswers(): number {
-    const [poll] = this.getDataValue('polls');
-    const alternatives = poll.getDataValue('alternatives');
-
-    const emails: string[] = [];
-
-    alternatives.forEach(alternative => {
-      const answers = alternative.getDataValue('answers');
-      const answerEmails = answers.map(({ email }) => email);
-      emails.push(...answerEmails);
-    });
-
-    return new Set(emails).size;
-  }
+  @HasMany(() => Result, 'quizId')
+  results?: Result[];
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)

@@ -5,9 +5,10 @@ import {
   Alternative,
   Answer,
   Invite,
-  Poll,
-  PollSet,
-  User
+  Question,
+  Quiz,
+  User,
+  Result
 } from '../src/models';
 
 const config = (): void => {
@@ -21,7 +22,15 @@ const config = (): void => {
     storage: process.env.DB_STORAGE
   });
 
-  sequelize.addModels([Alternative, Answer, Invite, Poll, PollSet, User]);
+  sequelize.addModels([
+    Alternative,
+    Answer,
+    Invite,
+    Question,
+    Quiz,
+    User,
+    Result
+  ]);
 };
 
 export default config;

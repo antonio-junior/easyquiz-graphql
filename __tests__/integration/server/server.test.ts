@@ -1,9 +1,9 @@
 import request from 'supertest';
 
-import { COOKIE_NAME, tokenize } from '../../../src/graphql/users/resolvers';
+import { COOKIE_NAME, tokenize } from '../../../src/graphql/user/resolvers';
 import server from '../../../src/index';
 import config from '../../config-sequelize';
-import { createFakePoll } from '../utils/pollBuilder';
+import { createFakeQuiz } from '../utils/quizBuilder';
 import { createFakeUser } from '../utils/userBuilder';
 
 config();
@@ -13,30 +13,30 @@ describe('Server Test', () => {
     server.close();
   });
   test('should start server', async done => {
-    await createFakePoll();
+    await createFakeQuiz();
 
     request(server.app)
       .post('/graphql')
-      .send({ query: '{ publicPollSets { title }}' })
+      .send({ query: '{ publicQuizes { title }}' })
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res).toHaveProperty('body.data.publicPollSets');
+        expect(res).toHaveProperty('body.data.publicQuizes');
         return done();
       });
   });
 
   test('should start server with a wrong token', async done => {
-    await createFakePoll();
+    await createFakeQuiz();
 
     request(server.app)
       .post('/graphql')
       .set('Cookie', `${COOKIE_NAME}=123456`)
-      .send({ query: '{ publicPollSets { title }}' })
+      .send({ query: '{ publicQuizes { title }}' })
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res).toHaveProperty('body.data.publicPollSets');
+        expect(res).toHaveProperty('body.data.publicQuizes');
         return done();
       });
   });
@@ -48,11 +48,11 @@ describe('Server Test', () => {
     request(server.app)
       .post('/graphql')
       .set('Cookie', `${COOKIE_NAME}=${token}`)
-      .send({ query: '{ publicPollSets { title }}' })
+      .send({ query: '{ publicQuizes { title }}' })
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res).toHaveProperty('body.data.publicPollSets');
+        expect(res).toHaveProperty('body.data.publicQuizes');
         return done();
       });
   });
