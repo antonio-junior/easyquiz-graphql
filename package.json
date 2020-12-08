@@ -1,6 +1,6 @@
 {
-  "name": "easypoll-graphql",
-  "description": "GraphQL API for EasyPoll",
+  "name": "easyquiz-graphql",
+  "description": "GraphQL API for EasyQuiz",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",

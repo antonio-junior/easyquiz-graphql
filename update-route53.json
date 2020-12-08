@@ -4,7 +4,7 @@
         {
             "Action": "UPSERT",
             "ResourceRecordSet": {
-                "Name": "easypoll.cf",
+                "Name": "easyquiz.cf",
                 "Type": "A",
                 "TTL": 300,
                 "ResourceRecords": [
