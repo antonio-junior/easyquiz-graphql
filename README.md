@@ -31,12 +31,12 @@ docker run -d --name postgres \
 postgres:12
 ```
 
-Run application locally in dev mode
+Run the application locally in dev mode
 ```sh
 npm run dev
 ```
 
-Build image from Dockerfile
+Build an image from Dockerfile
 ```sh
 docker build -t <IMAGE_NAME>:<TAG> .
 ```
