@@ -1,4 +1,5 @@
 import { PubSub, AuthenticationError } from 'apollo-server-express';
+import { withFilter } from 'graphql-subscriptions';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
 
@@ -27,7 +28,7 @@ interface QuestionInput {
   alternatives: AlternativeInput[];
 }
 
-const auth = (userId: number): void => {
+export const auth = (userId: number): void => {
   if (!userId) throw new AuthenticationError('Must be authenticated.');
 };
 
@@ -35,10 +36,12 @@ const USER_INVITED = 'USER_INVITED';
 
 const resolvers = {
   Quiz: {
-    owner: (quiz: Quiz): Promise<User> => User.findByPk(quiz.userId)
+    owner: async (quiz: Quiz): Promise<User | null> =>
+      User.findByPk(quiz.userId) || null
   },
   Result: {
-    quiz: (result: Result): Promise<Quiz> => Quiz.findByPk(result.quizId)
+    quiz: async (result: Result): Promise<Quiz | null> =>
+      Quiz.findByPk(result.quizId) || null
   },
   Query: {
     quiz: async (
@@ -84,16 +87,16 @@ const resolvers = {
         ]
       });
     },
-    publicQuizes: (): Promise<Quiz[]> => {
+    publicQuizes: async (): Promise<Quiz[] | null> => {
       return Quiz.findAll({
         where: { isPublic: true }
       });
     },
-    myQuizes: (
+    myQuizes: async (
       _root: unknown,
       _p: unknown,
       { userId }: { userId: number }
-    ): Promise<Quiz[]> => {
+    ): Promise<Quiz[] | null> => {
       auth(userId);
 
       return Quiz.findAll({
@@ -130,7 +133,7 @@ const resolvers = {
       _root: unknown,
       { quizId, email }: { quizId: number; email: string },
       { userId, pubSub }: { userId: number; pubSub: PubSub }
-    ): Promise<Invite> => {
+    ): Promise<Quiz> => {
       auth(userId);
 
       const quiz = await Quiz.findByPk(quizId);
@@ -138,13 +141,13 @@ const resolvers = {
       // user can only invite to quizes that he created
       if (quiz?.userId !== userId) throw new Error('Not authorized.');
 
-      const added = await Invite.create({ quizId, email });
+      await Invite.create({ quizId, email });
 
-      pubSub.publish(USER_INVITED, { invited: quiz });
+      pubSub.publish(USER_INVITED, { invited: { quiz, email } });
 
-      return added;
+      return quiz;
     },
-    addQuiz: (
+    addQuiz: async (
       _root: unknown,
       {
         title,
@@ -160,7 +163,7 @@ const resolvers = {
         questions: QuestionInput[];
       },
       { userId }: { userId: number }
-    ): Promise<Quiz> => {
+    ): Promise<Quiz | null> => {
       auth(userId);
 
       const expirationDate = moment.parseZone(expiration, 'DD-MM-YYYY hh:mm');
@@ -215,13 +218,27 @@ const resolvers = {
 
   Subscription: {
     invited: {
-      subscribe: (
-        _root: unknown,
-        _p: unknown,
-        { pubSub }: { pubSub: PubSub }
-      ): AsyncIterator<string> => pubSub.asyncIterator<string>([USER_INVITED])
+      subscribe: withFilter(
+        (
+          _root: unknown,
+          _p: unknown,
+          { pubSub }: { pubSub: PubSub }
+        ): AsyncIterator<string> =>
+          pubSub.asyncIterator<string>([USER_INVITED]),
+        (payload, { email }) => {
+          return payload.invited.email === email;
+        }
+      ),
+      resolve: ({ invited: { quiz } }: { invited: InvitePayload }): Quiz => {
+        return quiz;
+      }
     }
   }
+};
+
+type InvitePayload = {
+  quiz: Quiz;
+  email: string;
 };
 
 export default resolvers;

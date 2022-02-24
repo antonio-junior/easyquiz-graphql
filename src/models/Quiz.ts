@@ -15,8 +15,8 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import Question from './Question';
-import User from './User';
 import Result from './Result';
+import User from './User';
 
 enum Status {
   ACTIVE = 'ACTIVE',

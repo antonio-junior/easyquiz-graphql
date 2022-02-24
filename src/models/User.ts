@@ -6,12 +6,9 @@ import {
   Column,
   DataType,
   Model,
-  HasMany,
-  BeforeCreate,
-  BeforeUpdate
+  HasMany
 } from 'sequelize-typescript';
 
-import { encrypt } from '../graphql/user/resolvers';
 import Quiz from './Quiz';
 
 @DefaultScope(() => ({
@@ -21,13 +18,6 @@ import Quiz from './Quiz';
   tableName: 'users'
 })
 export default class User extends Model<User> {
-  @BeforeUpdate
-  @BeforeCreate
-  static convertHash(instance: User): void {
-    // eslint-disable-next-line no-param-reassign
-    instance.password = encrypt(instance.password);
-  }
-
   @Length({ min: 3 })
   @Column(DataType.TEXT)
   name!: string;
@@ -36,7 +26,6 @@ export default class User extends Model<User> {
   @Column(DataType.TEXT)
   email!: string;
 
-  @Length({ min: 6, max: 10 })
   @Column(DataType.TEXT)
   password!: string;
 

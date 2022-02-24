@@ -4,3 +4,4 @@ dist/
 database.sqlite
 .vscode/*
 **/coverage/**
+data/

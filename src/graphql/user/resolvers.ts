@@ -4,6 +4,7 @@ import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { User } from '../../models';
+import { auth } from '../quiz/resolvers';
 
 export const COOKIE_NAME = '_JWT_COOKIE';
 
@@ -33,7 +34,9 @@ const resolvers = {
       const token = tokenize(user.email, user.id);
 
       res.cookie(COOKIE_NAME, token, {
-        httpOnly: true
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
       });
 
       return user;
@@ -60,9 +63,50 @@ const resolvers = {
       const user = await User.findOne({ where: { email } });
       if (user) throw new Error('Email already in use');
 
-      const newuser = await User.create({ name, email, password });
+      const newuser = await User.create({
+        name,
+        email,
+        password: encrypt(password)
+      });
 
       return newuser;
+    },
+
+    updateUser: async (
+      _root: unknown,
+      {
+        name,
+        email,
+        password
+      }: { name: string; email: string; password: string },
+      { userId }: { userId: number }
+    ): Promise<User | undefined> => {
+      const user = await User.findByPk(userId);
+
+      const newData = {
+        name: name || user?.name,
+        email: email || user?.email,
+        password: password ? encrypt(password) : user?.password
+      };
+
+      // eslint-disable-next-line no-unused-expressions
+      user?.set(newData);
+
+      const newuser = await user?.save();
+
+      return newuser;
+    }
+  },
+
+  Query: {
+    me: async (
+      _root: unknown,
+      _p: unknown,
+      { userId }: { userId: number }
+    ): Promise<User | null> => {
+      auth(userId);
+
+      return User.findByPk(userId);
     }
   }
 };

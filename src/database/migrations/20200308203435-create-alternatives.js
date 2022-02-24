@@ -14,7 +14,7 @@ module.exports = {
           allowNull: false,
         },
         isRight: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.BOOLEAN,
           allowNull: true,
         },
         questionId: {

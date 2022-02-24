@@ -64,7 +64,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addInvite(quizId: ID!, email: String!): Invite
+    addInvite(quizId: ID!, email: String!): Quiz!
     addQuiz(
       title: String!
       isPublic: Boolean!
@@ -84,7 +84,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    invited: Quiz!
+    invited(email: String!): Quiz!
   }
 `;
 
