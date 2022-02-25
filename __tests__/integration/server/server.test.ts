@@ -57,8 +57,7 @@ describe('Server Test', () => {
       });
   });
 
-  test('should have URLs', () => {
-    expect(server.getSubscriptionURL()).not.toBeNull();
+  test('should return server URL', () => {
     expect(server.getServerURL()).not.toBeNull();
   });
 });

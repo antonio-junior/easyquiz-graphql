@@ -11,22 +11,20 @@ import { createFakeUser, getFakeUser } from '../utils/userBuilder';
 config();
 
 describe('Test Quiz Mutations', () => {
-  test('should throw an error if I invite someone to a quiz I didnt created ', async () => {
+  test('should throw an error if I invite someone to a quiz that I didnt created ', async () => {
     const quiz = await createFakeQuiz();
     const userToInvite = getFakeUser();
 
     const quizQuery = gql`
       mutation QUIZ_MUTATION($quizId: ID!, $email: String!) {
         addInvite(quizId: $quizId, email: $email) {
-          quizId
+          title
         }
       }
     `;
 
     const expected = {
-      data: {
-        addInvite: null
-      },
+      data: null,
       errors: [new GraphQLError('Not authorized.')]
     };
 
@@ -49,7 +47,7 @@ describe('Test Quiz Mutations', () => {
     const quizQuery = gql`
       mutation QUIZ_MUTATION($quizId: ID!, $email: String!) {
         addInvite(quizId: $quizId, email: $email) {
-          quizId
+          title
         }
       }
     `;
@@ -57,7 +55,7 @@ describe('Test Quiz Mutations', () => {
     const expected = {
       data: {
         addInvite: {
-          quizId: quiz.id.toString()
+          title: quiz.title
         }
       }
     };

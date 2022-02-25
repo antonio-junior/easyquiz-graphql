@@ -1,5 +1,6 @@
-import { gql, PubSub } from 'apollo-server-express';
+import { gql } from 'apollo-server-express';
 import { graphql, subscribe, parse } from 'graphql';
+import { PubSub } from 'graphql-subscriptions';
 import { ExecutionResult } from 'graphql-tools';
 import { ExecutionResultDataDefault } from 'graphql/execution/execute';
 
@@ -14,15 +15,17 @@ config();
 describe('Test Query Subscriptions', () => {
   test('should validate invite subscription', async () => {
     const querySubscription = gql`
-      subscription {
-        invited {
+      subscription INVITE_SUBSCRIPTION($email: String!) {
+        invited(email: $email) {
           id
           title
         }
       }
     `;
 
-    tester.test(true, querySubscription);
+    tester.test(true, querySubscription, {
+      email: getFakeUser().email
+    });
   });
 
   test('should subscribe to invites', async () => {
@@ -38,7 +41,7 @@ describe('Test Query Subscriptions', () => {
     const mutation = `
       mutation QUIZ_MUTATION($quizId: ID!, $email: String!) {
         addInvite(quizId: $quizId, email: $email) {
-          quizId
+          title
         }
       }
     `;
@@ -49,9 +52,8 @@ describe('Test Query Subscriptions', () => {
     };
 
     const subscription = `
-      subscription {
-        invited {
-          id
+      subscription INVITE_SUBSCRIPTION($email: String!){
+        invited (email: $email){
           title
         }
       }
@@ -69,14 +71,14 @@ describe('Test Query Subscriptions', () => {
       schema,
       parse(subscription),
       triggerSubscription,
-      newContext
+      newContext,
+      { email: userToInvite.email }
     )) as AsyncIterableIterator<ExecutionResult<ExecutionResultDataDefault>>;
 
     const resultData = await result.next();
 
     const expected = {
       invited: {
-        id: quiz.id.toString(),
         title: quiz.title
       }
     };

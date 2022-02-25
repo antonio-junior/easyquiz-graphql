@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { ApolloServer, PubSub } from 'apollo-server-express';
 import cookieParser from 'cookie-parser';
 import { CronJob } from 'cron';
@@ -22,10 +21,6 @@ interface SessionContext extends UserContext {
   pubSub: PubSub;
 }
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0
-});
 class Server {
   private sequelize: Sequelize = sequelize;
 
@@ -85,18 +80,12 @@ class Server {
   }
 
   private middlewares(): void {
-    this.app.use(Sentry.Handlers.requestHandler());
     this.app.use(cookieParser());
     this.apolloServer.applyMiddleware({
       app: this.app,
       path: '/graphql'
     });
     this.apolloServer.installSubscriptionHandlers(this.httpServer);
-    this.app.use(Sentry.Handlers.errorHandler());
-  }
-
-  public getSubscriptionURL(): string {
-    return `ws://localhost:${this.port}${this.apolloServer.subscriptionsPath}`;
   }
 
   public getServerURL(): string {
@@ -108,8 +97,6 @@ class Server {
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.log(`🚀 Server ready at ${this.getServerURL()}`);
-        // eslint-disable-next-line no-console
-        console.log(`🚀 Subscriptions ready at ${this.getSubscriptionURL()}`);
       }
     });
   }
