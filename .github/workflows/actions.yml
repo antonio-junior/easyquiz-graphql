@@ -8,6 +8,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - uses: actions/checkout@v2
@@ -15,18 +18,48 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
+
     - name: Install dependencies
       run: npm install
+
     - name: Lint
       run: npm run ts-lint
+
     - name: Build
       run: npm run build
+
     - name: Tests
       run: npm run test
       env:
         DB_STORAGE: './__tests__/database.sqlite'
+
     - name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@master
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: ./__tests__/coverage/lcov.info
+
+    - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=true
+            prefix=
+            suffix=
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
