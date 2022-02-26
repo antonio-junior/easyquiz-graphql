@@ -3,6 +3,7 @@ import { withFilter } from 'graphql-subscriptions';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
 
+import sequelize from '../../database/connection';
 import {
   Invite,
   Question,
@@ -148,9 +149,9 @@ const resolvers = {
       _root: unknown,
       { id }: { id: number },
       { userId }: { userId: number }
-    ): Promise<Result | null> => {
+    ): Promise<Result[] | null> => {
       auth(userId);
-      return Result.findOne({
+      return Result.findAll({
         where: { quizId: id }
       });
     }
@@ -210,27 +211,41 @@ const resolvers = {
         }
       });
 
-      return Quiz.create(
-        {
-          title,
-          status: Quiz.Status.ACTIVE,
-          isPublic,
-          showPartial,
-          userId,
-          expiration: expirationDate.isValid() ? expirationDate.toDate() : null,
-          questions
-        },
-        {
-          include: [Question]
+      let createdQuiz = null;
+      try {
+        await sequelize.transaction(async t => {
+          createdQuiz = Quiz.create(
+            {
+              title,
+              status: Quiz.Status.ACTIVE,
+              isPublic,
+              showPartial,
+              userId,
+              expiration: expirationDate.isValid()
+                ? expirationDate.toDate()
+                : null,
+              questions
+            },
+            {
+              include: [Question],
+              transaction: t
+            }
+          );
+        });
+      } catch (e) {
+        if (e instanceof Error) {
+          throw new Error(e.message);
         }
-      );
+      }
+
+      return createdQuiz;
     },
 
     addResult: async (
       _root: unknown,
       { quizId, answers }: { quizId: number; answers: AnswerInput[] },
       { userId, email }: { userId: number; email: string }
-    ): Promise<Result> => {
+    ): Promise<Result | null> => {
       const quiz = await Quiz.findByPk(quizId);
       const userInvites = await Invite.findAll({
         where: { email, quizId }
@@ -252,12 +267,28 @@ const resolvers = {
 
       if (result) throw new Error('User already answered');
 
-      return Result.create(
-        { userId, quizId, answers },
-        {
-          include: [Answer]
+      const transaction = await sequelize.transaction();
+
+      let createdResult = null;
+      try {
+        createdResult = await Result.create(
+          { userId, quizId, answers },
+          {
+            include: [Answer],
+            transaction
+          }
+        );
+      } catch (e) {
+        await transaction.rollback();
+
+        if (e instanceof Error) {
+          throw new Error(e.message);
         }
-      );
+      }
+
+      await transaction.commit();
+
+      return createdResult;
     }
   },
 

@@ -75,7 +75,7 @@ const typeDefs = gql`
     publicQuizes: [Quiz!]
     myQuizes: [Quiz!]
     availableToAnswer: [Quiz!]
-    result(id: ID!): Result
+    result(id: ID!): [Result]
   }
 
   type Subscription {
