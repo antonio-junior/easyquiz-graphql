@@ -1,5 +1,4 @@
 import {
-  HasMany,
   Table,
   Column,
   DataType,
@@ -14,8 +13,9 @@ import Question from './Question';
   tableName: 'answers'
 })
 export default class Answer extends Model<Answer> {
-  @HasMany(() => Alternative, 'answerId')
-  alternatives!: Alternative[];
+  @ForeignKey(() => Alternative)
+  @Column(DataType.INTEGER)
+  choice!: number;
 
   @ForeignKey(() => Question)
   @Column(DataType.INTEGER)

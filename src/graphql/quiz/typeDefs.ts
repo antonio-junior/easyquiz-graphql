@@ -16,6 +16,7 @@ const typeDefs = gql`
   type Question {
     id: ID!
     query: String!
+    correctAlternatives: [Int!]!
     alternatives: [Alternative!]!
   }
 
@@ -28,19 +29,12 @@ const typeDefs = gql`
   type Result {
     id: ID!
     user: User!
-    quiz: Quiz!
     answers: [Answer!]!
   }
 
   type Answer {
-    alternatives: [Alternative]!
+    choice: Alternative!
     question: Question!
-  }
-
-  type Query {
-    quiz(id: ID!): Quiz
-    userQuizes(userId: ID!): [Quiz]!
-    quizes: [Quiz]!
   }
 
   input AlternativeInput {
@@ -55,7 +49,7 @@ const typeDefs = gql`
 
   input AnswerInput {
     questionId: ID!
-    alternatives: [Int]!
+    choice: Int!
   }
 
   type Invite {
@@ -76,11 +70,12 @@ const typeDefs = gql`
   }
 
   type Query {
-    quiz: Quiz
+    quiz(id: ID!): Quiz
     answeredQuizes: [Quiz!]
     publicQuizes: [Quiz!]
     myQuizes: [Quiz!]
     availableToAnswer: [Quiz!]
+    result(id: ID!): Result
   }
 
   type Subscription {

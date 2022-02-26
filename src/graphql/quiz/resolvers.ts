@@ -15,7 +15,7 @@ import {
 
 interface AnswerInput {
   questionId: number;
-  alternatives: number[];
+  choice: number;
 }
 
 interface AlternativeInput {
@@ -40,21 +40,39 @@ const resolvers = {
       User.findByPk(quiz.userId) || null
   },
   Result: {
-    quiz: async (result: Result): Promise<Quiz | null> =>
-      Quiz.findByPk(result.quizId) || null
+    user: async (result: Result): Promise<User | null> =>
+      User.findByPk(result.userId) || null
+  },
+  Question: {
+    correctAlternatives: async (question: Question): Promise<number[]> => {
+      const alternatives = await Alternative.findAll({
+        where: { questionId: question.id, isRight: true }
+      });
+      return alternatives.map(a => a.id);
+    }
+  },
+  Answer: {
+    choice: async (answer: Answer): Promise<Alternative | null> =>
+      Alternative.findByPk(answer.choice) || null,
+    question: async (answer: Answer): Promise<Question | null> =>
+      Question.findByPk(answer.questionId) || null
   },
   Query: {
     quiz: async (
       _root: unknown,
       { id }: { id: number },
-      { email }: { email: string }
+      { userId, email }: { userId: number; email: string }
     ): Promise<Quiz> => {
       const quiz = await Quiz.findByPk(id, { rejectOnEmpty: true });
       const userInvites = await Invite.findAll({
         where: { email, quizId: id }
       });
 
-      if (!quiz.isPublic && userInvites.length === 0) {
+      if (
+        quiz.userId !== userId &&
+        !quiz.isPublic &&
+        userInvites.length === 0
+      ) {
         throw new AuthenticationError('Not Authorized');
       }
 
@@ -116,7 +134,7 @@ const resolvers = {
       return Quiz.findAll({
         where: {
           [Op.or]: [
-            { ispublic: true },
+            { isPublic: true },
             {
               id: {
                 [Op.in]: quizIdsInvited
@@ -124,6 +142,16 @@ const resolvers = {
             }
           ]
         }
+      });
+    },
+    result: async (
+      _root: unknown,
+      { id }: { id: number },
+      { userId }: { userId: number }
+    ): Promise<Result | null> => {
+      auth(userId);
+      return Result.findOne({
+        where: { quizId: id }
       });
     }
   },
@@ -140,6 +168,12 @@ const resolvers = {
 
       // user can only invite to quizes that he created
       if (quiz?.userId !== userId) throw new Error('Not authorized.');
+
+      const alreadyInvited = await Invite.findAndCountAll({
+        where: { quizId, email }
+      });
+
+      if (alreadyInvited.count) throw new Error('User already invited.');
 
       await Invite.create({ quizId, email });
 
@@ -195,9 +229,20 @@ const resolvers = {
     addResult: async (
       _root: unknown,
       { quizId, answers }: { quizId: number; answers: AnswerInput[] },
-      { userId }: { userId: number }
+      { userId, email }: { userId: number; email: string }
     ): Promise<Result> => {
-      auth(userId);
+      const quiz = await Quiz.findByPk(quizId);
+      const userInvites = await Invite.findAll({
+        where: { email, quizId }
+      });
+
+      if (
+        quiz?.userId !== userId &&
+        !quiz?.isPublic &&
+        userInvites.length === 0
+      ) {
+        throw new AuthenticationError('Not Authorized');
+      }
 
       const result = await Result.findOne({
         where: {

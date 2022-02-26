@@ -5,13 +5,17 @@ import {
   Column,
   DataType,
   ForeignKey,
-  Model
+  Model,
+  DefaultScope
 } from 'sequelize-typescript';
 
 import Answer from './Answer';
 import Quiz from './Quiz';
 import User from './User';
 
+@DefaultScope(() => ({
+  include: [Answer]
+}))
 @Table({
   tableName: 'results'
 })

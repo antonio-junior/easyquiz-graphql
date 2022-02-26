@@ -8,7 +8,6 @@ import {
   Model
 } from 'sequelize-typescript';
 
-import Answer from './Answer';
 import Question from './Question';
 
 @Table({
@@ -29,8 +28,4 @@ export default class Alternative extends Model<Alternative> {
   @ForeignKey(() => Question)
   @Column(DataType.INTEGER)
   questionId!: number;
-
-  @ForeignKey(() => Answer)
-  @Column(DataType.INTEGER)
-  answerId!: number;
 }
