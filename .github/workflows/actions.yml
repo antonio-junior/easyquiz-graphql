@@ -52,7 +52,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           flavor: |
             latest=true
-            prefix=mytag,onlatest=false
+            prefix=
             suffix=
 
       - name: Build and push Docker image
@@ -60,5 +60,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: latest
           labels: ${{ steps.meta.outputs.labels }}
