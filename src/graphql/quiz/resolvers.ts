@@ -3,7 +3,6 @@ import { withFilter } from 'graphql-subscriptions';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
 
-import sequelize from '../../database/connection';
 import {
   Invite,
   Question,
@@ -211,32 +210,20 @@ const resolvers = {
         }
       });
 
-      let createdQuiz = null;
-      try {
-        await sequelize.transaction(async t => {
-          createdQuiz = Quiz.create(
-            {
-              title,
-              status: Quiz.Status.ACTIVE,
-              isPublic,
-              showPartial,
-              userId,
-              expiration: expirationDate.isValid()
-                ? expirationDate.toDate()
-                : null,
-              questions
-            },
-            {
-              include: [Question],
-              transaction: t
-            }
-          );
-        });
-      } catch (e) {
-        if (e instanceof Error) {
-          throw new Error(e.message);
+      const createdQuiz = Quiz.create(
+        {
+          title,
+          status: Quiz.Status.ACTIVE,
+          isPublic,
+          showPartial,
+          userId,
+          expiration: expirationDate.isValid() ? expirationDate.toDate() : null,
+          questions
+        },
+        {
+          include: [Question]
         }
-      }
+      );
 
       return createdQuiz;
     },
@@ -267,26 +254,12 @@ const resolvers = {
 
       if (result) throw new Error('User already answered');
 
-      const transaction = await sequelize.transaction();
-
-      let createdResult = null;
-      try {
-        createdResult = await Result.create(
-          { userId, quizId, answers },
-          {
-            include: [Answer],
-            transaction
-          }
-        );
-      } catch (e) {
-        await transaction.rollback();
-
-        if (e instanceof Error) {
-          throw new Error(e.message);
+      const createdResult = await Result.create(
+        { userId, quizId, answers },
+        {
+          include: [Answer]
         }
-      }
-
-      await transaction.commit();
+      );
 
       return createdResult;
     }

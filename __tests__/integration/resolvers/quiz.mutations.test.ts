@@ -88,9 +88,9 @@ describe('Test Quiz Mutations', () => {
     const quiz = await createFakeQuiz(alternatives);
 
     const quizQuery = gql`
-      mutation POLL_MUTATION($quizId: ID!, $answers: [AnswerInput]!) {
+      mutation QUIZ_MUTATION($quizId: ID!, $answers: [AnswerInput]!) {
         addResult(quizId: $quizId, answers: $answers) {
-          quiz {
+          user {
             id
           }
         }
@@ -100,8 +100,8 @@ describe('Test Quiz Mutations', () => {
     const expected = {
       data: {
         addResult: {
-          quiz: {
-            id: quiz.id.toString()
+          user: {
+            id: userToAddResult?.id?.toString()
           }
         }
       }
@@ -110,13 +110,13 @@ describe('Test Quiz Mutations', () => {
     const result = await tester.graphql(
       quizQuery,
       undefined,
-      { ...context, userId: userToAddResult.id },
+      { ...context, userId: userToAddResult.id, email: userToAddResult.email },
       {
         quizId: quiz.id,
         answers: [
           {
             questionId: quiz.questions[0].id,
-            alternatives: [quiz.questions[0].alternatives[0].id]
+            choice: quiz.questions[0].alternatives[0].id
           }
         ]
       }
@@ -138,10 +138,6 @@ describe('Test Quiz Mutations', () => {
       ]
     };
     const quiz = await createFakeQuiz(alternatives);
-    const alternativesToResult = [
-      // eslint-disable-next-line radix
-      parseInt(quiz.questions[0].alternatives[0].id)
-    ];
     await Result.create(
       {
         userId: userToAddResult.id,
@@ -149,7 +145,7 @@ describe('Test Quiz Mutations', () => {
         answers: [
           {
             questionId: quiz.questions[0].id,
-            alternatives: alternativesToResult
+            choice: quiz.questions[0].alternatives[0].id
           }
         ]
       },
@@ -161,9 +157,7 @@ describe('Test Quiz Mutations', () => {
     const quizQuery = gql`
       mutation POLL_MUTATION($quizId: ID!, $answers: [AnswerInput]!) {
         addResult(quizId: $quizId, answers: $answers) {
-          quiz {
-            id
-          }
+          id
         }
       }
     `;
@@ -178,13 +172,13 @@ describe('Test Quiz Mutations', () => {
     const result = await tester.graphql(
       quizQuery,
       undefined,
-      { ...context, userId: userToAddResult.id },
+      { ...context, userId: userToAddResult.id, email: userToAddResult.email },
       {
         quizId: quiz.id,
         answers: [
           {
             questionId: quiz.questions[0].id,
-            alternatives: [quiz.questions[0].alternatives[0].id]
+            choice: quiz.questions[0].alternatives[0].id
           }
         ]
       }
@@ -256,7 +250,7 @@ describe('Test Quiz Mutations', () => {
 
     const quizData = await getFakeQuiz(alternatives);
 
-    const pollQuery = gql`
+    const quizQuery = gql`
       mutation POLL_MUTATION(
         $title: String!
         $isPublic: Boolean!
@@ -288,7 +282,7 @@ describe('Test Quiz Mutations', () => {
     };
 
     const result = await tester.graphql(
-      pollQuery,
+      quizQuery,
       undefined,
       { ...context, userId: quizData.userId },
       {
