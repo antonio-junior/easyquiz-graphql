@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/github/license/antonio-junior/easyquiz-graphql)](https://opensource.org/licenses/MIT)
 [![Codacy Quality](https://api.codacy.com/project/badge/Grade/67586e978b08441eb4900d1c96e6b853)](https://app.codacy.com/manual/antonio-junior/easyquiz-graphql?utm_source=github.com&utm_medium=referral&utm_content=antonio-junior/easyquiz-graphql&utm_campaign=Badge_Grade_Dashboard)
 [![Codacy Coverage](https://app.codacy.com/project/badge/Coverage/805bcad4a1324b93b46cfbb8f6cf9b02)](https://www.codacy.com/manual/antonio-junior/easyquiz-graphql?utm_source=github.com&utm_medium=referral&utm_content=antonio-junior/easyquiz-graphql&utm_campaign=Badge_Coverage)
+[![Known Vulnerabilities](https://snyk.io/test/github/antonio-junior/easyquiz-graphql/master/badge.svg)](https://snyk.io/test/github/antonio-junior/easyquiz-graphql)
 ![Language ](https://img.shields.io/github/languages/top/antonio-junior/easyquiz-graphql)
 ![Code size](https://img.shields.io/github/languages/code-size/antonio-junior/easyquiz-graphql)
 ![Repo size](https://img.shields.io/github/repo-size/antonio-junior/easyquiz-graphql)
@@ -15,12 +16,14 @@
 
 First of all, create a .env file and configure its variables following .env.example
 
-Run tests  
+Run tests
+
 ```sh
 npm test
 ```
 
 Starts database container
+
 ```sh
 docker run -d --name postgres \
 -e POSTGRES_DB=<DB_NAME> \
@@ -32,26 +35,31 @@ postgres:12
 ```
 
 Run the application locally in dev mode
+
 ```sh
 npm run dev
 ```
 
 Build an image from Dockerfile
+
 ```sh
 docker build -t <IMAGE_NAME>:<TAG> .
 ```
 
 Start services specified in docker-compose.yml
+
 ```sh
 docker-compose up -d
 ```
 
 Build the service before starting services
+
 ```sh
 docker-compose up -d --build
 ```
 
 Start application in a container from docker hub image
+
 ```sh
 docker run --name easyquiz-graphql -d --env-file .env -p <PORT>:<PORT> antoniocsjunior/easyquiz-graphql
 ```
