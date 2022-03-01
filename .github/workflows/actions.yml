@@ -47,7 +47,7 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
 
       - name: Extract commit hash
-      - id: commit
+        id: commit
         uses: pr-mpt/actions-commit-hash@v1
 
       - name: Login to DockerHub
