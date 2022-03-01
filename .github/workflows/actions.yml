@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
 
+env:
+  IMAGE_NAME: antoniocsjunior/easyquiz-graphql
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,30 +42,26 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: ./__tests__/coverage/lcov.info
 
+      - name: Extract version from package.json
+        id: gnv
+        uses: martinbeentjes/npm-get-version-action@master
+
+      - name: Extract commit hash
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v1
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: antoniocsjunior
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: antoniocsjunior/easyquiz-graphql
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: antoniocsjunior/easyquiz-graphql:latest
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.gnv.current-version}},${{ env.IMAGE_NAME }}:${{ steps.commit.outputs.short }}
 
       - name: Run Snyk to check Docker image for vulnerabilities
         continue-on-error: true
@@ -70,7 +69,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: antoniocsjunior/easyquiz-graphql
+          image: ${{ env.IMAGE_NAME }}
           args: --file=Dockerfile
 
       - name: Upload result to GitHub Code Scanning

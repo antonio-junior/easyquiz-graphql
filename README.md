@@ -2,8 +2,8 @@
 
 [![Actions Status](https://github.com/antonio-junior/easyquiz-graphql/workflows/build/badge.svg)](https://github.com/antonio-junior/easyquiz-graphql/actions)
 [![License: MIT](https://img.shields.io/github/license/antonio-junior/easyquiz-graphql)](https://opensource.org/licenses/MIT)
-[![Codacy Quality](https://api.codacy.com/project/badge/Grade/67586e978b08441eb4900d1c96e6b853)](https://app.codacy.com/manual/antonio-junior/easyquiz-graphql?utm_source=github.com&utm_medium=referral&utm_content=antonio-junior/easyquiz-graphql&utm_campaign=Badge_Grade_Dashboard)
-[![Codacy Coverage](https://app.codacy.com/project/badge/Coverage/805bcad4a1324b93b46cfbb8f6cf9b02)](https://www.codacy.com/manual/antonio-junior/easyquiz-graphql?utm_source=github.com&utm_medium=referral&utm_content=antonio-junior/easyquiz-graphql&utm_campaign=Badge_Coverage)
+[![Codacy Quality](https://app.codacy.com/project/badge/Grade/805bcad4a1324b93b46cfbb8f6cf9b02)](https://www.codacy.com/gh/antonio-junior/easyquiz-graphql/dashboard?utm_source=github.com&utm_medium=referral&utm_content=antonio-junior/easyquiz-graphql&utm_campaign=Badge_Grade)
+[![Codacy Coverage](https://app.codacy.com/project/badge/Coverage/805bcad4a1324b93b46cfbb8f6cf9b02)](https://www.codacy.com/gh/antonio-junior/easyquiz-graphql/dashboard?utm_source=github.com&utm_medium=referral&utm_content=antonio-junior/easyquiz-graphql&utm_campaign=Badge_Coverage)
 [![Known Vulnerabilities](https://snyk.io/test/github/antonio-junior/easyquiz-graphql/master/badge.svg)](https://snyk.io/test/github/antonio-junior/easyquiz-graphql)
 ![Language ](https://img.shields.io/github/languages/top/antonio-junior/easyquiz-graphql)
 ![Code size](https://img.shields.io/github/languages/code-size/antonio-junior/easyquiz-graphql)
