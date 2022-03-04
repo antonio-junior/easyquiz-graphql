@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --silent
+RUN npm ci
 
 COPY . .
 
@@ -17,17 +17,16 @@ RUN npm prune --production
 
 
 FROM node:12-alpine
+ENV NODE_ENV production
 
+USER node
 WORKDIR /app
 
 # copy from build image
-COPY --from=BUILD_IMAGE /app/dist ./dist
-COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
+COPY --chown=node:node --from=BUILD_IMAGE /app/dist ./dist
+COPY --chown=node:node --from=BUILD_IMAGE /app/node_modules ./node_modules
 
-COPY --from=BUILD_IMAGE /app/dist/database/config.js /app/config/config.js
-COPY --from=BUILD_IMAGE /app/dist/database/migrations /app/migrations
-
-COPY --from=BUILD_IMAGE /app/start.sh /app/start.sh
+COPY --chown=node:node --from=BUILD_IMAGE /app/start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
 CMD ["sh", "/app/start.sh"]

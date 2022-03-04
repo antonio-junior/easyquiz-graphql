@@ -1,7 +1,7 @@
 {
   "name": "easyquiz-graphql",
   "description": "GraphQL API for EasyQuiz",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Antônio Junior <acsjunior1@gmail.com>",
@@ -71,6 +71,7 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2",
     "sequelize-cli": "^5.5.1",
+    "sequelize-typescript": "^1.1.0",
     "sqlite3": "^4.2.0",
     "supertest": "^4.0.2",
     "ts-jest": "^25.2.0",
@@ -95,7 +96,6 @@
     "pg-hstore": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^5.21.4",
-    "sequelize-typescript": "^1.1.0",
     "subscriptions-transport-ws": "^0.9.16",
     "uuid": "^7.0.2"
   }
