@@ -2,7 +2,7 @@ import { gql, PubSub } from 'apollo-server-express';
 import faker from 'faker';
 import { GraphQLError } from 'graphql';
 
-import { Answer, Result } from '../../../src/models';
+import { Answer, Invite, Result } from '../../../src/models';
 import config from '../../config-sequelize';
 import { createFakeQuiz, getFakeQuiz } from '../utils/quizBuilder';
 import { tester, context } from '../utils/tester';
@@ -58,6 +58,36 @@ describe('Test Quiz Mutations', () => {
           title: quiz.title
         }
       }
+    };
+
+    const result = await tester.graphql(
+      quizQuery,
+      undefined,
+      { ...context, pubSub: new PubSub(), userId: quiz.userId },
+      {
+        quizId: quiz.id,
+        email: userToInvite.email
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
+  test('should throw an error if the user was already invited', async () => {
+    const quiz = await createFakeQuiz();
+    const userToInvite = getFakeUser();
+    await Invite.create({ quizId: quiz.id, email: userToInvite.email });
+
+    const quizQuery = gql`
+      mutation QUIZ_MUTATION($quizId: ID!, $email: String!) {
+        addInvite(quizId: $quizId, email: $email) {
+          title
+        }
+      }
+    `;
+
+    const expected = {
+      data: null,
+      errors: [new GraphQLError('User already invited.')]
     };
 
     const result = await tester.graphql(
@@ -167,6 +197,68 @@ describe('Test Quiz Mutations', () => {
         addResult: null
       },
       errors: [new GraphQLError('User already answered')]
+    };
+
+    const result = await tester.graphql(
+      quizQuery,
+      undefined,
+      { ...context, userId: userToAddResult.id, email: userToAddResult.email },
+      {
+        quizId: quiz.id,
+        answers: [
+          {
+            questionId: quiz.questions[0].id,
+            choice: quiz.questions[0].alternatives[0].id
+          }
+        ]
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
+  test('should throw an error if user was not invited', async () => {
+    const userToAddResult = await createFakeUser();
+    const alternatives = {
+      questions: [
+        {
+          alternatives: [
+            { text: faker.lorem.sentence(3), isRight: false },
+            { text: faker.lorem.sentence(3), isRight: true },
+            { text: faker.lorem.sentence(4), isRight: false }
+          ]
+        }
+      ]
+    };
+    const quiz = await createFakeQuiz({ alternatives, isPublic: false });
+    await Result.create(
+      {
+        userId: userToAddResult.id,
+        quizId: quiz.id,
+        answers: [
+          {
+            questionId: quiz.questions[0].id,
+            choice: quiz.questions[0].alternatives[0].id
+          }
+        ]
+      },
+      {
+        include: [Answer]
+      }
+    );
+
+    const quizQuery = gql`
+      mutation POLL_MUTATION($quizId: ID!, $answers: [AnswerInput]!) {
+        addResult(quizId: $quizId, answers: $answers) {
+          id
+        }
+      }
+    `;
+
+    const expected = {
+      data: {
+        addResult: null
+      },
+      errors: [new GraphQLError('Not Authorized')]
     };
 
     const result = await tester.graphql(

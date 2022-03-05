@@ -34,6 +34,71 @@ describe.only('Test user operations', () => {
     expect(result).toEqual(expected);
   });
 
+  test('should return the authenticated user', async () => {
+    const user = await createFakeUser();
+
+    const meQuery = gql`
+      query ME_QUERY {
+        me {
+          name
+          email
+        }
+      }
+    `;
+
+    const expected = {
+      data: {
+        me: {
+          name: user.name,
+          email: user.email
+        }
+      }
+    };
+
+    const result = await tester.graphql(meQuery, undefined, {
+      ...context,
+      userId: user.id
+    });
+    expect(result).toEqual(expected);
+  });
+
+  test('should update a user', async () => {
+    const user = await createFakeUser();
+    const newUSerData = await getFakeUser();
+
+    const mutationUpdateUser = gql`
+      mutation ADDUSER_MUTATION($name: String!, $email: String!) {
+        updateUser(name: $name, email: $email) {
+          name
+          email
+        }
+      }
+    `;
+
+    const expected = {
+      data: {
+        updateUser: {
+          name: newUSerData.name,
+          email: newUSerData.email
+        }
+      }
+    };
+
+    const result = await tester.graphql(
+      mutationUpdateUser,
+      undefined,
+      {
+        ...context,
+        userId: user.id
+      },
+      {
+        name: newUSerData.name,
+        email: newUSerData.email
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
   test('user should logout', async () => {
     const logoutMutation = gql`
       mutation LOGOUT_MUTATION {

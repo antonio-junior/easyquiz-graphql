@@ -6,6 +6,7 @@ import {
   Model
 } from 'sequelize-typescript';
 
+import returnModel from '../decorators';
 import Alternative from './Alternative';
 import Question from './Question';
 
@@ -13,11 +14,11 @@ import Question from './Question';
   tableName: 'answers'
 })
 export default class Answer extends Model<Answer> {
-  @ForeignKey(() => Alternative)
+  @ForeignKey(returnModel(Alternative))
   @Column(DataType.INTEGER)
   choice!: number;
 
-  @ForeignKey(() => Question)
+  @ForeignKey(returnModel(Question))
   @Column(DataType.INTEGER)
   questionId!: number;
 }

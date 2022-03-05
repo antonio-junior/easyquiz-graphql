@@ -9,6 +9,7 @@ import {
   Model
 } from 'sequelize-typescript';
 
+import returnModel from '../decorators';
 import Quiz from './Quiz';
 
 @Table({
@@ -24,7 +25,7 @@ export default class Invite extends Model<Invite> {
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @ForeignKey(() => Quiz)
+  @ForeignKey(returnModel(Quiz))
   @Column(DataType.INTEGER)
   quizId!: number;
 }

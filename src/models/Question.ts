@@ -11,6 +11,7 @@ import {
   CreatedAt
 } from 'sequelize-typescript';
 
+import returnModel from '../decorators';
 import Alternative from './Alternative';
 import Quiz from './Quiz';
 
@@ -32,7 +33,7 @@ export default class Question extends Model<Question> {
   @HasMany(() => Alternative, 'questionId')
   alternatives!: Alternative[];
 
-  @ForeignKey(() => Quiz)
+  @ForeignKey(returnModel(Quiz))
   @Column(DataType.INTEGER)
   quizId!: number;
 }

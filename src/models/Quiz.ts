@@ -14,6 +14,7 @@ import {
 } from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 
+import returnModel from '../decorators';
 import Question from './Question';
 import Result from './Result';
 import User from './User';
@@ -91,7 +92,7 @@ export default class Quiz extends Model<Quiz> {
   @HasMany(() => Result, 'quizId')
   results?: Result[];
 
-  @ForeignKey(() => User)
+  @ForeignKey(returnModel(User))
   @Column(DataType.INTEGER)
   userId!: number;
 }

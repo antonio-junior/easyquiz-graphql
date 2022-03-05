@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express';
 import faker from 'faker';
 import { GraphQLError } from 'graphql';
 
-import { Invite, User, Quiz, Result } from '../../../src/models';
+import { Invite, User, Quiz, Result, Answer } from '../../../src/models';
 import config from '../../config-sequelize';
 import { createFakeQuiz } from '../utils/quizBuilder';
 import { tester, context } from '../utils/tester';
@@ -44,6 +44,80 @@ describe('Test Quiz Queries', () => {
       quizQuery,
       undefined,
       { ...context, email: faker.internet.email() },
+      {
+        id: quiz.id
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
+  test('should return a quiz result', async () => {
+    const quiz = await createFakeQuiz();
+    const fakeUser = await createFakeUser();
+    const answers = [
+      {
+        questionId: quiz.questions[0].id,
+        choice: quiz.questions[0].alternatives[0].id
+      }
+    ];
+    await Result.create(
+      { userId: fakeUser.id, quizId: quiz.id, answers },
+      {
+        include: [Answer]
+      }
+    );
+    const owner = await User.findByPk(quiz.userId, {
+      rejectOnEmpty: false
+    });
+
+    const quizQuery = gql`
+      query QUIZ_QUERY($id: ID!) {
+        result(id: $id) {
+          user {
+            name
+          }
+          answers {
+            question {
+              id
+              correctAlternatives
+            }
+            choice {
+              id
+            }
+          }
+        }
+      }
+    `;
+
+    const expected = {
+      data: {
+        result: [
+          {
+            user: {
+              name: fakeUser.name
+            },
+            answers: [
+              {
+                question: {
+                  id: answers[0].questionId.toString(),
+                  correctAlternatives: [
+                    quiz.questions[0].alternatives.find(a => a.isRight)?.id
+                  ]
+                },
+                choice: {
+                  id: answers[0].choice.toString()
+                }
+              }
+            ]
+          }
+        ]
+      }
+    };
+
+    const result = await tester.graphql(
+      quizQuery,
+      undefined,
+      { ...context, email: owner.email, userId: owner.id },
       {
         id: quiz.id
       }

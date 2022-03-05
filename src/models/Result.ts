@@ -9,6 +9,7 @@ import {
   DefaultScope
 } from 'sequelize-typescript';
 
+import returnModel from '../decorators';
 import Answer from './Answer';
 import Quiz from './Quiz';
 import User from './User';
@@ -20,11 +21,11 @@ import User from './User';
   tableName: 'results'
 })
 export default class Result extends Model<Result> {
-  @ForeignKey(() => User)
+  @ForeignKey(returnModel(User))
   @Column(DataType.INTEGER)
   userId!: number;
 
-  @ForeignKey(() => Quiz)
+  @ForeignKey(returnModel(Quiz))
   @Column(DataType.INTEGER)
   quizId!: number;
 

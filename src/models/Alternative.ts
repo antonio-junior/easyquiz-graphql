@@ -8,6 +8,7 @@ import {
   Model
 } from 'sequelize-typescript';
 
+import returnModel from '../decorators';
 import Question from './Question';
 
 @Table({
@@ -25,7 +26,7 @@ export default class Alternative extends Model<Alternative> {
   @Column(DataType.DATE)
   createdAt!: Date;
 
-  @ForeignKey(() => Question)
+  @ForeignKey(returnModel(Question))
   @Column(DataType.INTEGER)
   questionId!: number;
 }

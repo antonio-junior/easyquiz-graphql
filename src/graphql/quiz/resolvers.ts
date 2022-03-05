@@ -63,10 +63,12 @@ const resolvers = {
       { id }: { id: number },
       { userId, email }: { userId: number; email: string }
     ): Promise<Quiz> => {
-      const quiz = await Quiz.findByPk(id, { rejectOnEmpty: true });
-      const userInvites = await Invite.findAll({
-        where: { email, quizId: id }
-      });
+      const [quiz, userInvites] = await Promise.all([
+        Quiz.findByPk(id, { rejectOnEmpty: true }),
+        Invite.findAll({
+          where: { email, quizId: id }
+        })
+      ]);
 
       if (
         quiz.userId !== userId &&
@@ -233,10 +235,12 @@ const resolvers = {
       { quizId, answers }: { quizId: number; answers: AnswerInput[] },
       { userId, email }: { userId: number; email: string }
     ): Promise<Result | null> => {
-      const quiz = await Quiz.findByPk(quizId);
-      const userInvites = await Invite.findAll({
-        where: { email, quizId }
-      });
+      const [quiz, userInvites] = await Promise.all([
+        Quiz.findByPk(quizId),
+        Invite.findAll({
+          where: { email, quizId }
+        })
+      ]);
 
       if (
         quiz?.userId !== userId &&
