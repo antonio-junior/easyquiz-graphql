@@ -266,6 +266,76 @@ const resolvers = {
       );
 
       return createdResult;
+    },
+
+    updateQuestion: async (
+      _root: unknown,
+      { id, query }: { id: number; query: string }
+    ): Promise<Question | undefined> => {
+      const question = await Question.findByPk(id);
+
+      const newData = {
+        query: query || question?.query
+      };
+
+      // eslint-disable-next-line no-unused-expressions
+      question?.set(newData);
+
+      const newQuestion = await question?.save();
+
+      return newQuestion;
+    },
+
+    updateAlternative: async (
+      _root: unknown,
+      { id, text, isRight }: { id: number; text: string; isRight: boolean }
+    ): Promise<Alternative | undefined> => {
+      const alternative = await Alternative.findByPk(id);
+
+      const newData = {
+        text: text || alternative?.text,
+        isRight: isRight || alternative?.isRight
+      };
+
+      // eslint-disable-next-line no-unused-expressions
+      alternative?.set(newData);
+
+      const newAlternative = await alternative?.save();
+
+      return newAlternative;
+    },
+
+    updateQuiz: async (
+      _root: unknown,
+      {
+        id,
+        title,
+        isPublic,
+        showPartial,
+        dtExpiration
+      }: {
+        id: number;
+        title: string;
+        isPublic: boolean;
+        showPartial: boolean;
+        dtExpiration: string;
+      }
+    ): Promise<Quiz | undefined> => {
+      const quiz = await Quiz.findByPk(id);
+
+      const newData = {
+        title: title || quiz?.title,
+        isPublic: isPublic || quiz?.isPublic,
+        showPartial: showPartial || quiz?.showPartial,
+        dtExpiration: dtExpiration || quiz?.dtExpiration
+      };
+
+      // eslint-disable-next-line no-unused-expressions
+      quiz?.set(newData);
+
+      const newQuiz = await quiz?.save();
+
+      return newQuiz;
     }
   },
 

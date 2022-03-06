@@ -328,6 +328,105 @@ describe('Test Quiz Mutations', () => {
     expect(result).toEqual(expected);
   });
 
+  test('should update a Quiz', async () => {
+    const quiz = await createFakeQuiz();
+
+    const quizQuery = gql`
+      mutation QUIZ_MUTATION($id: ID!, $title: String!) {
+        updateQuiz(title: $title, id: $id) {
+          title
+        }
+      }
+    `;
+
+    const newTitle = 'new title';
+
+    const expected = {
+      data: {
+        updateQuiz: {
+          title: newTitle
+        }
+      }
+    };
+
+    const result = await tester.graphql(
+      quizQuery,
+      undefined,
+      { ...context, userId: quiz?.userId },
+      {
+        id: quiz?.id,
+        title: newTitle
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
+  test('should update a Question', async () => {
+    const quiz = await createFakeQuiz();
+
+    const quizQuery = gql`
+      mutation QUIZ_MUTATION($id: ID!, $query: String!) {
+        updateQuestion(query: $query, id: $id) {
+          query
+        }
+      }
+    `;
+
+    const newQuery = 'new query';
+
+    const expected = {
+      data: {
+        updateQuestion: {
+          query: newQuery
+        }
+      }
+    };
+
+    const result = await tester.graphql(
+      quizQuery,
+      undefined,
+      { ...context, userId: quiz?.userId },
+      {
+        id: quiz?.questions[0].id,
+        query: newQuery
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
+  test('should update a Alternative', async () => {
+    const quiz = await createFakeQuiz();
+
+    const quizQuery = gql`
+      mutation QUIZ_MUTATION($id: ID!, $text: String!) {
+        updateAlternative(text: $text, id: $id) {
+          text
+        }
+      }
+    `;
+
+    const newText = 'new text';
+
+    const expected = {
+      data: {
+        updateAlternative: {
+          text: newText
+        }
+      }
+    };
+
+    const result = await tester.graphql(
+      quizQuery,
+      undefined,
+      { ...context, userId: quiz?.userId },
+      {
+        id: quiz?.questions[0].alternatives[0].id,
+        text: newText
+      }
+    );
+    expect(result).toEqual(expected);
+  });
+
   test('should throw an error if a quiz has a question with no right alternative', async () => {
     const alternatives = {
       questions: [

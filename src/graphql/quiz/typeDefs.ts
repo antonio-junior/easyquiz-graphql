@@ -67,6 +67,15 @@ const typeDefs = gql`
       questions: [QuestionInput]!
     ): Quiz
     addResult(quizId: ID!, answers: [AnswerInput]!): Result
+    updateQuiz(
+      id: ID!
+      title: String
+      isPublic: Boolean
+      showPartial: Boolean
+      dtExpiration: String
+    ): Quiz!
+    updateQuestion(id: ID!, query: String!): Question!
+    updateAlternative(id: ID!, text: String, isRight: Boolean): Alternative!
   }
 
   type Query {
