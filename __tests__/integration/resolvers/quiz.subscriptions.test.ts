@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server-express';
-import { graphql, subscribe, parse } from 'graphql';
+import { graphql, subscribe, parse, ExecutionResult } from 'graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { ExecutionResult } from 'graphql-tools';
 import { ExecutionResultDataDefault } from 'graphql/execution/execute';
 
 import schema from '../../../src/graphql/schema';

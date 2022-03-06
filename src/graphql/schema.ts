@@ -1,5 +1,4 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { mergeTypeDefs } from 'graphql-tools-merge-typedefs';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 
 import QuizResolvers from './quiz/resolvers';
 import QuizTypeDef from './quiz/typeDefs';
@@ -10,7 +9,7 @@ export const resolvers = [UserResolvers, QuizResolvers];
 export const typeDefs = [UserTypeDef, QuizTypeDef];
 
 const schema = makeExecutableSchema({
-  typeDefs: mergeTypeDefs(typeDefs),
+  typeDefs,
   resolvers
 });
 
