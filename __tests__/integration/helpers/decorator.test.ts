@@ -1,4 +1,4 @@
-import returnModel from '../../../src/decorators';
+import returnModel from '../../../src/helpers/decorators';
 import { User } from '../../../src/models';
 
 describe('Decorator Test', () => {

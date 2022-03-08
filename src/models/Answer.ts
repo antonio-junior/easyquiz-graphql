@@ -6,7 +6,7 @@ import {
   Model
 } from 'sequelize-typescript';
 
-import returnModel from '../decorators';
+import returnModel from '../helpers/decorators';
 import Alternative from './Alternative';
 import Question from './Question';
 

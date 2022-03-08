@@ -2,6 +2,7 @@ import { PubSub, AuthenticationError } from 'apollo-server-express';
 import { withFilter } from 'graphql-subscriptions';
 import * as moment from 'moment';
 import { Op } from 'sequelize';
+import sendMail from './../../helpers/mail';
 
 import {
   Invite,
@@ -178,6 +179,8 @@ const resolvers = {
       if (alreadyInvited.count) throw new Error('User already invited.');
 
       await Invite.create({ quizId, email });
+
+      await sendMail(quizId, email);
 
       pubSub.publish(USER_INVITED, { invited: { quiz, email } });
 

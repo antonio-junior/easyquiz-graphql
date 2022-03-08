@@ -9,7 +9,7 @@ import {
   DefaultScope
 } from 'sequelize-typescript';
 
-import returnModel from '../decorators';
+import returnModel from '../helpers/decorators';
 import Answer from './Answer';
 import Quiz from './Quiz';
 import User from './User';

@@ -1,4 +1,4 @@
-import { cronTime, cronTask } from '../../../src/cron/CronJob';
+import { cronTime, cronTask } from '../../../src/helpers/CronJob';
 import { Quiz } from '../../../src/models';
 import config from '../../config-sequelize';
 import { createFakeQuiz } from '../utils/quizBuilder';

@@ -14,7 +14,7 @@ import {
 } from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 
-import returnModel from '../decorators';
+import returnModel from '../helpers/decorators';
 import Question from './Question';
 import Result from './Result';
 import User from './User';

@@ -11,7 +11,7 @@ import {
   CreatedAt
 } from 'sequelize-typescript';
 
-import returnModel from '../decorators';
+import returnModel from '../helpers/decorators';
 import Alternative from './Alternative';
 import Quiz from './Quiz';
 

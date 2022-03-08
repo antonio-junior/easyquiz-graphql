@@ -7,9 +7,10 @@ import jwt from 'jsonwebtoken';
 import { Sequelize } from 'sequelize-typescript';
 import { ExecutionParams } from 'subscriptions-transport-ws';
 
-import { cronTime, cronTask } from './cron/CronJob';
+import { cronTime, cronTask } from './helpers/CronJob';
 import sequelize from './database/connection';
 import schema from './graphql/schema';
+import { validate } from './helpers/mail';
 import { COOKIE_NAME } from './graphql/user/resolvers';
 
 interface UserContext {
@@ -81,6 +82,7 @@ class Server {
 
   private middlewares(): void {
     this.app.use(cookieParser());
+    this.app.get('/validate', validate);
     this.apolloServer.applyMiddleware({
       app: this.app,
       path: '/graphql'
