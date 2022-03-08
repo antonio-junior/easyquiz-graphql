@@ -35,6 +35,11 @@ jobs:
         run: npm run test
         env:
           DB_STORAGE: './__tests__/database.sqlite'
+          MAIL_HOST: smtp.mailtrap.io
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_PORT: 2525
+          PORT: 9090
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@master
