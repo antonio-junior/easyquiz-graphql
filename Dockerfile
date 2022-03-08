@@ -10,8 +10,6 @@ COPY . .
 
 RUN npm run build
 
-RUN npm test
-
 # remove development dependencies
 RUN npm prune --production
 
