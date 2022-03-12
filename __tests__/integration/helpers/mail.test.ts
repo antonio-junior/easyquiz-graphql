@@ -26,7 +26,7 @@ describe('Email Test', () => {
       });
   });
 
-  test('should validate email link', async done => {
+  test('should return an error to an invalid link', async done => {
     const email = faker.internet.email();
     const quizId = 1;
     const link = await sendMail(quizId, email);
