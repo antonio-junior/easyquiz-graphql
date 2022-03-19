@@ -36,6 +36,8 @@ class Server {
   private httpServer = http.createServer(this.app);
 
   public apolloServer = new ApolloServer({
+    introspection: true,
+    playground: true,
     schema,
     context: ({
       req,
