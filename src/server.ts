@@ -85,7 +85,7 @@ class Server {
   private middlewares(): void {
     this.app.use(cookieParser());
     this.app.get('/validate', validate);
-    this.app.get('/check', (_, res: Response) => res.status(200));
+    this.app.get('/check', (_, res: Response) => res.status(200).json(''));
     this.apolloServer.applyMiddleware({
       app: this.app,
       path: '/graphql'
